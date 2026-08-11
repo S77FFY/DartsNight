@@ -257,6 +257,16 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 .plc.gold{background:var(--wire);border-color:var(--ink)}
 .plc.silver{background:rgba(11,12,8,.1)}
 /* ---------- league ---------- */
+.rack .chip{width:86px;height:86px;border-width:2px;box-shadow:none;background:rgba(11,12,8,.05);color:rgba(11,12,8,.3);border-color:rgba(11,12,8,.28)}
+.rack .chip::before{opacity:.5}
+.rack .chip .nm{font-size:16px;max-width:60px;color:rgba(11,12,8,.55)}
+.rack .chip .rk{font-size:9px}
+.rack .chip.on{background:var(--chalk);color:var(--green);border-color:var(--ink);
+  box-shadow:0 3px 0 rgba(0,0,0,.3),inset 0 0 0 6px var(--chalk),inset 0 0 0 9px currentColor}
+.rack .chip.on .nm{color:var(--ink)}
+.rack .chip .tick{position:absolute;top:-5px;right:-5px;width:24px;height:24px;border-radius:50%;
+  background:var(--green);color:var(--chalk);font-size:13px;line-height:24px;text-align:center;z-index:2}
+.vtag{font-family:var(--data);font-size:12px;letter-spacing:.22em;text-transform:uppercase;opacity:.45;margin:0 0 14px}
 .monthnav{display:flex;align-items:center;gap:10px;margin:14px 0 4px;flex-wrap:wrap}
 .monthnav .btn.ghost{border-color:var(--ink);color:var(--ink);padding:6px 14px}
 .monthnav .btn.ghost:hover{background:var(--ink);color:var(--chalk)}
@@ -294,6 +304,7 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 (function(){
 'use strict';
 
+var VERSION='1.2.0';
 var KEY='wednesday-darts-v1';
 var store=(function(){
   try{var t='__t';localStorage.setItem(t,t);localStorage.removeItem(t);return localStorage;}
@@ -384,6 +395,74 @@ function orderedPeople(){
     .sort(function(x,y){
       var a=x.k==null?9999:x.k,b=y.k==null?9999:y.k;
       return a-b||x.i-y.i;
+    }).map(function(o){return o.p;});
+}
+
+/* Up/down: within your own half you shuffle one place at a time towards the top of it;
+   press the other way and you cross the divider, landing in the nearest slot of the
+   other half. Everyone between shuffles along to fill the gap. */
+function movePerson(id,dir){
+  var act=active(),n=act.length,half=Math.floor(n/2);
+  if(n<2||half<1)return;
+  var i=-1;
+  for(var k=0;k<act.length;k++){if(act[k].id==id)i=k;}
+  if(i<0)return;
+  var pos=i+1,target;
+  if(dir==='up'){
+    if(pos>half)target=half;              // bottom half -> last slot of the top half
+    else if(pos>1)target=pos-1;           // already a player -> one place safer
+    else return;
+  }else{
+    if(pos<=half)target=half+1;           // top half -> first slot of the bottom half
+    else if(pos<n)target=pos+1;           // already a non-player -> one place lower
+    else return;
+  }
+  var moved=act.splice(i,1)[0];
+  act.splice(target-1,0,moved);
+  var q=0;
+  S.people=S.people.map(function(p){return p.out?p:act[q++];});
+}
+
+/* Everyone who's played this month or last, most recent night first. */
+function regulars(){
+  var mk=monthKey(S.cfg.date),pm=shiftMonth(mk,-1),m={};
+  S.league.weeks.forEach(function(w){
+    var wm=monthKey(w.d);
+    if(wm!==mk&&wm!==pm)return;
+    w.rows.forEach(function(r,i){
+      var k=key(r.n);if(!k)return;
+      if(!m[k])m[k]={n:r.n,last:'',c:0,pos:i,w:0};
+      m[k].c++;
+      if(wm===mk)m[k].w+=(+r.w||0);
+      if(w.d>=m[k].last){m[k].last=w.d;m[k].pos=i;m[k].n=r.n;}
+    });
+  });
+  return Object.keys(m).map(function(k){return m[k];}).sort(function(a,b){
+    if(a.last!==b.last)return a.last<b.last?1:-1;
+    return a.pos-b.pos||b.c-a.c||(key(a.n)<key(b.n)?-1:1);
+  });
+}
+function here(name){var k=key(name);return S.people.some(function(p){return key(p.name)===k;});}
+function addPerson(name){
+  var v=String(name||'').trim();
+  if(!v||here(v))return false;
+  S.people.push({id:'p'+Date.now()+Math.floor(Math.random()*99999),name:v,out:false});
+  return true;
+}
+function dropPerson(name){var k=key(name);S.people=S.people.filter(function(p){return key(p.name)!==k;});}
+/* The most recent night that isn't tonight — used to reuse last week's running order. */
+function lastNight(){
+  var w=null;
+  S.league.weeks.forEach(function(x){if(x.d!==S.cfg.date&&(!w||x.d>w.d))w=x;});
+  return w;
+}
+function applyLastOrder(){
+  var w=lastNight();if(!w)return;
+  var pos={};w.rows.forEach(function(r,i){pos[key(r.n)]=i;});
+  S.people=S.people.map(function(p,i){return {p:p,i:i,k:pos[key(p.name)]};})
+    .sort(function(a,b){
+      var x=a.k==null?9999:a.k,y=b.k==null?9999:b.k;
+      return x-y||a.i-b.i;
     }).map(function(o){return o.p;});
 }
 
@@ -509,6 +588,7 @@ function viewSetup(){
     '<button class="btn ghost small" data-league="1">League</button></div></div>'+
     '<div class="panel cream"><div class="sect">'+
     '<h1 class="big">Chalk it up</h1>'+
+    '<div class="vtag">v'+VERSION+'</div>'+
     '<p class="sub">Set the format before anyone throws. You can still change boards later if one frees up.</p>'+
     '<div class="eyebrow">Date</div>'+
     '<div class="modalrow"><span class="field"><label>Playing on</label>'+
@@ -547,7 +627,8 @@ function viewEntry(){
     chips+='<div class="chip '+role+'" data-person="'+p.id+'">'+
       '<button class="x" data-del="'+p.id+'" aria-label="Remove '+esc(p.name)+'">×</button>'+
       '<span class="nm">'+esc(p.name)+'</span><span class="rk">'+lbl+'</span>'+
-      (dec?'':'<span class="mv"><button data-up="'+p.id+'" aria-label="Move up">▲</button><button data-down="'+p.id+'" aria-label="Move down">▼</button></span>')+
+      (dec||p.out?'':'<span class="mv"><button data-up="'+p.id+'" aria-label="'+(role==='nonplayer'?'Promote '+esc(p.name)+' to the players':'Move '+esc(p.name)+' up the players')+'">▲</button>'+
+        '<button data-down="'+p.id+'" aria-label="'+(role==='player'?'Drop '+esc(p.name)+' to the non-players':'Move '+esc(p.name)+' down the non-players')+'">▼</button></span>')+
       '</div>';
   });
   var warn='';
@@ -555,6 +636,18 @@ function viewEntry(){
   var lead=dec
     ?'<p class="sub"><b>Decider week.</b> The order is locked to the '+monthLabel(mk)+' league table, so nobody in contention gets drawn alongside a rival — everyone chasing it keeps a route to the crown. The number on each chip is their wins so far this month.</p>'
     :'<p class="sub">Add each name as the £'+S.cfg.fee+' lands. Then order them best-to-worst — the top half throw as players, the bottom half get drawn against them. Tap a chip to sit someone out.</p>';
+  var regs=regulars(),ln=lastNight();
+  var rack='';
+  if(regs.length){
+    rack='<div class="eyebrow">The regulars — tap whoever\'s in</div><div class="chipgrid rack">'+
+      regs.map(function(r){
+        var on=here(r.n);
+        return '<div class="chip reg'+(on?' on':'')+'" data-reg="'+esc(r.n)+'">'+
+          (on?'<span class="tick">\u2713</span>':'')+
+          '<span class="nm">'+esc(r.n)+'</span>'+
+          '<span class="rk">'+(on?'Playing':(r.w?r.w+' this month':'\u2014'))+'</span></div>';
+      }).join('')+'</div>';
+  }
   return '<div class="topbar"><div class="brand">Wednesday <b>Darts</b></div>'+
     '<div class="meta"><span class="pill">'+dayLabel(S.cfg.date)+(dec?' · decider':'')+'</span>'+
     '<span class="pill">'+S.cfg.score+' · '+(S.cfg.bestOf===3?'Best of 3':'Single leg')+'</span>'+
@@ -567,8 +660,9 @@ function viewEntry(){
     '<datalist id="rosterList">'+roster().map(function(n){return '<option value="'+esc(n)+'">';}).join('')+'</datalist>'+
     '<button class="btn" data-add="1">Add chip</button>'+
     '<span class="pill" style="border-color:rgba(11,12,8,.3)">'+S.people.length+' paid · '+act.length+' playing</span></div>'+
-    warn+
-    (S.people.length?'<div class="chipgrid">'+ (act.length?'<div class="divider">Players — the top half</div>':'') + chips+'</div>':'<p class="sub" style="opacity:.45">No chips on the table yet.</p>')+
+    warn+rack+
+    (S.people.length?'<div class="eyebrow">Tonight\u2019s order'+(dec?'':' — best to worst')+'</div><div class="chipgrid">'+ (act.length?'<div class="divider">Players — the top half</div>':'') + chips+'</div>':'<p class="sub" style="opacity:.45">No chips on the table yet.</p>')+
+    (S.people.length&&ln&&!dec?'<div style="margin-top:14px"><button class="btn ghost small" data-lastorder="1">Use '+dayLabel(ln.d)+'\u2019s order</button></div>':'')+
     '<div style="margin-top:34px"><button class="btn" data-go="draw" '+(act.length>=4&&!odd?'':'disabled')+'>Into the hat →</button></div>'+
     '</div></div>';
 }
@@ -960,7 +1054,7 @@ function openBoards(){
 
 /* ---------- events ---------- */
 document.addEventListener('click',function(e){
-  var t=e.target.closest('[data-cfg],[data-go],[data-add],[data-del],[data-up],[data-down],[data-person],[data-draw],[data-pick],[data-clearpairs],[data-confirmpairs],[data-grp],[data-split],[data-start],[data-redraw],[data-game],[data-side],[data-undo],[data-end],[data-reset],[data-checkout],[data-boards],[data-setboards],[data-cosave],[data-close],[data-tie],[data-tiecancel],[data-dec],[data-league],[data-back],[data-month],[data-addweek],[data-editweek],[data-eadd],[data-erm],[data-esave],[data-edel],[data-eclose],[data-crown],[data-crownwin],[data-crownshare],[data-uncrown]');
+  var t=e.target.closest('[data-cfg],[data-go],[data-add],[data-del],[data-up],[data-down],[data-person],[data-draw],[data-pick],[data-clearpairs],[data-confirmpairs],[data-grp],[data-split],[data-start],[data-redraw],[data-game],[data-side],[data-undo],[data-end],[data-reset],[data-checkout],[data-boards],[data-setboards],[data-cosave],[data-close],[data-tie],[data-tiecancel],[data-dec],[data-league],[data-back],[data-month],[data-addweek],[data-editweek],[data-eadd],[data-erm],[data-esave],[data-edel],[data-eclose],[data-reg],[data-lastorder],[data-crown],[data-crownwin],[data-crownshare],[data-uncrown]');
   if(!t)return;
   var d=t.dataset;
 
@@ -1005,13 +1099,10 @@ document.addEventListener('click',function(e){
     S.phase=d.go;return render();
   }
   if(d.add!=null&&!d.person){return addName();}
+  if(d.reg){if(here(d.reg))dropPerson(d.reg);else addPerson(d.reg);return render();}
+  if(d.lastorder){applyLastOrder();return render();}
   if(d.del){S.people=S.people.filter(function(p){return p.id!=d.del;});return render();}
-  if(d.up||d.down){
-    var id=d.up||d.down,i=S.people.findIndex(function(p){return p.id==id;});
-    var j=d.up?i-1:i+1;
-    if(j>=0&&j<S.people.length){var tmp=S.people[i];S.people[i]=S.people[j];S.people[j]=tmp;}
-    return render();
-  }
+  if(d.up||d.down){movePerson(d.up||d.down,d.up?'up':'down');return render();}
   if(d.person){var p=S.people.filter(function(x){return x.id==d.person;})[0];if(p){p.out=!p.out;}return render();}
 
   if(d.draw){doDraw();return render();}
@@ -1071,7 +1162,7 @@ document.addEventListener('click',function(e){
 function addName(){
   var el=document.getElementById('nameIn');if(!el)return;
   var v=(el.value||'').trim();if(!v)return;
-  S.people.push({id:'p'+Date.now()+Math.floor(Math.random()*999),name:v,out:false});
+  addPerson(v);el.value='';
   render();
   var n=document.getElementById('nameIn');if(n)n.focus();
 }
@@ -1094,7 +1185,7 @@ if(typeof globalThis!=='undefined'&&globalThis.__DARTS_TEST__){
     assignGroups:assignGroups,splitPlan:splitPlan,record:record,render:render,
     isLastOfMonth:isLastOfMonth,isDeciderWeek:isDeciderWeek,leagueTable:leagueTable,
     leagueRow:leagueRow,orderedPeople:orderedPeople,doDraw:doDraw,nightRows:nightRows,
-    upsertWeek:upsertWeek,crownFor:crownFor,monthKey:monthKey,roster:roster};
+    upsertWeek:upsertWeek,crownFor:crownFor,monthKey:monthKey,roster:roster,movePerson:movePerson,regulars:regulars,addPerson:addPerson,dropPerson:dropPerson,here:here,applyLastOrder:applyLastOrder,lastNight:lastNight};
 }
 })();
 
