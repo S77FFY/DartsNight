@@ -185,8 +185,13 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 .fixhead h2{font-family:var(--display);text-transform:uppercase;letter-spacing:.1em;font-size:clamp(15px,1.5vw,21px);margin:0;color:var(--wire)}
 .fixhead span{font-family:var(--data);font-size:11px;letter-spacing:.14em;opacity:.5}
 .fixgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(124px,9.5vw,158px),1fr));gap:8px}
+.gm .dbl{position:absolute;bottom:2px;left:6px;font-family:var(--data);font-size:8px;letter-spacing:.06em;opacity:.35;text-transform:uppercase}
+.erow input[data-ename]{text-transform:uppercase;letter-spacing:.05em}
+.erow .stepper button{width:36px;height:36px;font-size:21px}
+.erow .stepper b{font-size:24px;width:36px}
+.arow .grouptag{margin-left:auto;white-space:nowrap}
 .gm{
-  position:relative;border:2px solid;border-radius:3px;padding:8px 6px 6px;
+  position:relative;touch-action:manipulation;border:2px solid;border-radius:3px;padding:8px 6px 6px;
   display:flex;flex-direction:column;align-items:center;gap:2px;min-height:88px;
   background:rgba(0,0,0,.25);cursor:pointer;transition:transform .12s ease;
 }
@@ -222,9 +227,9 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 .gm.final{grid-column:span 2;border-width:3px}
 .gm .undo{
   position:absolute;bottom:2px;right:4px;font-family:var(--data);font-size:9px;
-  letter-spacing:.1em;opacity:0;transition:opacity .15s;padding:2px 4px;
+  letter-spacing:.1em;opacity:.5;transition:opacity .15s;padding:2px 4px;
 }
-.gm:hover .undo{opacity:.65}
+.gm:hover .undo{opacity:.9}
 .gm .undo:hover{opacity:1;color:var(--wire)}
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.6;margin:14px 0 2px}
 .legend i{display:inline-block;width:11px;height:11px;border:2px solid;margin-right:5px;vertical-align:-1px;border-radius:2px}
@@ -257,6 +262,16 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 .plc.gold{background:var(--wire);border-color:var(--ink)}
 .plc.silver{background:rgba(11,12,8,.1)}
 /* ---------- league ---------- */
+.arows{display:flex;flex-direction:column;gap:10px}
+.arow{display:flex;align-items:center;gap:12px;border:2px solid var(--ink);border-radius:2px;padding:10px 12px}
+.arow.win{background:var(--wire)}
+.arow .tnames{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.arow .btn{margin-left:auto;border-color:var(--ink)}
+.arow .btn.ghost{background:none;color:var(--ink)}
+.stepper{display:flex;align-items:center;gap:2px;margin-left:auto}
+.stepper button{width:40px;height:40px;border:2px solid var(--ink);border-radius:2px;font-family:var(--display);font-size:24px;line-height:1}
+.stepper button:hover{background:var(--ink);color:var(--chalk)}
+.stepper b{font-family:var(--display);font-size:30px;width:44px;text-align:center}
 .rack .chip{width:86px;height:86px;border-width:2px;box-shadow:none;background:rgba(11,12,8,.05);color:rgba(11,12,8,.3);border-color:rgba(11,12,8,.28)}
 .rack .chip::before{opacity:.5}
 .rack .chip .nm{font-size:16px;max-width:60px;color:rgba(11,12,8,.55)}
@@ -304,7 +319,7 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 (function(){
 'use strict';
 
-var VERSION='1.2.0';
+var VERSION='1.4.0';
 var KEY='wednesday-darts-v1';
 var store=(function(){
   try{var t='__t';localStorage.setItem(t,t);localStorage.removeItem(t);return localStorage;}
@@ -318,6 +333,7 @@ function fresh(){
     league:{weeks:[],crowns:[]},
     prevPhase:'setup',
     edit:null,
+    gedit:null,
     people:[],            // {id,name,out}
     teams:[],             // {n,a,b,grp}
     fixtures:[],          // {id,grp,rd,a,b,st,board,la,lb,win,kind}
@@ -444,7 +460,7 @@ function regulars(){
 }
 function here(name){var k=key(name);return S.people.some(function(p){return key(p.name)===k;});}
 function addPerson(name){
-  var v=String(name||'').trim();
+  var v=String(name||'').trim().toUpperCase();
   if(!v||here(v))return false;
   S.people.push({id:'p'+Date.now()+Math.floor(Math.random()*99999),name:v,out:false});
   return true;
@@ -788,6 +804,7 @@ function viewLeague(){
       (tied.length>1?'Settle the crown ('+tied.length+' level)':'Crown '+esc(tbl[0].n))+'</button></div>':'')+
     '<div class="eyebrow">Weeks</div>'+wk+
     (trophy?'<div class="eyebrow">Trophy cabinet</div><div class="teamlist">'+trophy+'</div>':'')+
+    '<div class="eyebrow">Danger</div><button class="btn ghost small" data-wipe="1" style="border-color:#B92A20;color:#B92A20">Delete every week and start over</button>'+
     '</div></div>';
 }
 function openWeekEditor(d){
@@ -800,8 +817,7 @@ function harvest(){
   if(!S.edit)return;
   var rows=[],nodes=document.querySelectorAll('[data-ename]');
   for(var i=0;i<nodes.length;i++){
-    var nm=nodes[i].value.trim(),wv=document.querySelector('[data-ewins="'+i+'"]');
-    rows.push({n:nm,w:parseInt(wv?wv.value:0,10)||0});
+    rows.push({n:nodes[i].value.trim().toUpperCase(),w:S.edit.rows[i]?S.edit.rows[i].w:0});
   }
   S.edit.rows=rows;
   var dEl=document.querySelector('[data-edate]');
@@ -816,7 +832,8 @@ function drawEditor(){
       '<input type="date" data-edate="1" value="'+esc(e.d)+'"></span></div>'+
     '<div class="editrows">'+e.rows.map(function(r,i){
       return '<div class="erow"><input data-ename="'+i+'" list="rosterList2" placeholder="Name" value="'+esc(r.n)+'" maxlength="14" autocomplete="off">'+
-        '<input data-ewins="'+i+'" type="number" inputmode="numeric" min="0" max="99" value="'+(r.w||0)+'">'+
+        '<span class="stepper"><button data-estep="'+i+'" data-edelta="-1" aria-label="One win fewer">\u2212</button>'+
+        '<b>'+(r.w||0)+'</b><button data-estep="'+i+'" data-edelta="1" aria-label="One win more">+</button></span>'+
         '<button class="btn ghost small" data-erm="'+i+'">×</button></div>';
     }).join('')+'</div>'+
     '<datalist id="rosterList2">'+roster().map(function(n){return '<option value="'+esc(n)+'">';}).join('')+'</datalist>'+
@@ -918,7 +935,8 @@ function gameHTML(f,busy,nid,boardFree){
       '<button class="side'+(f.win===f.b?' win':'')+'" data-side="b" data-game="'+f.id+'">'+f.b+'</button>'+
     '</span>'+legs+
     '<span class="names">'+esc(tname(f.a))+'<br>'+esc(tname(f.b))+'</span>'+
-    (f.st!=='pending'?'<button class="undo" data-undo="'+f.id+'">undo</button>':'')+
+    (f.st!=='pending'?'<button class="undo" data-amend="'+f.id+'">amend</button>':'')+
+    (f.st==='done'?'<span class="dbl">double-tap to swap</span>':'')+
     '</div>';
 }
 function fix(id){for(var i=0;i<S.fixtures.length;i++){if(S.fixtures[i].id===id)return S.fixtures[i];}return null;}
@@ -939,14 +957,141 @@ function scoreLeg(id,side){
   }
   render();
 }
+function afterResultChange(f){
+  S.finished=false;
+  if(f.kind==='group'){
+    S.fixtures=S.fixtures.filter(function(x){return x.kind!=='final';});
+    S.manualRank={};
+    if(allGroupsDone())maybeFinal();
+  }
+}
 function undo(id){
   var f=fix(id);if(!f)return;
   f.st='pending';f.board=null;f.la=0;f.lb=0;f.win=null;
-  if(f.kind==='group'){
-    S.fixtures=S.fixtures.filter(function(x){return x.kind!=='final';});
-    S.manualRank={};S.finished=false;
-  }
+  afterResultChange(f);
+  if(!modalHTML)render();
+}
+
+/* Park tonight in the league and clear the board, keeping every previous week. */
+function newNight(){
+  if(S.teams.length&&S.fixtures.some(function(f){return f.st==='done';}))
+    upsertWeek(S.cfg.date,nightRows());
+  var lg=S.league,c=S.cfg;
+  S=fresh();
+  S.league=lg;
+  S.cfg.score=c.score;S.cfg.bestOf=c.bestOf;S.cfg.boards=c.boards;S.cfg.fee=c.fee;S.cfg.twoGroups=c.twoGroups;
+  S.cfg.date=todayISO();S.cfg.decider=null;
+  tiePending=null;S.phase='setup';modalHTML='';
   render();
+}
+function askNewNight(){
+  var saved=S.teams.length&&S.fixtures.some(function(f){return f.st==='done';});
+  setModal('<div class="scrim"><div class="modal">'+
+    '<h2>Start a new night</h2>'+
+    '<p>'+(saved?'Tonight\u2019s wins get written into the '+monthLabel(monthKey(S.cfg.date))+' league first. ':'')+
+    'Every previous week, the table and the trophy cabinet all stay exactly as they are \u2014 only the board is cleared.</p>'+
+    '<div class="modalrow"><button class="btn" data-newnight2="1">Clear the board</button>'+
+    '<button class="btn ghost" data-close="1">Cancel</button></div></div></div>');
+}
+function askWipe(){
+  setModal('<div class="scrim"><div class="modal">'+
+    '<h2>Delete everything?</h2>'+
+    '<p>This throws away every week, the whole league table and the trophy cabinet. There\u2019s no getting it back.</p>'+
+    '<div class="modalrow"><button class="btn" data-wipe2="1" style="background:#B92A20;border-color:#B92A20;color:#EFE7D2">Delete the lot</button>'+
+    '<button class="btn ghost" data-close="1">Keep it</button></div></div></div>');
+}
+
+/* ---------- amending a scored game ---------- */
+function openAmend(id){
+  var f=fix(id);if(!f||f.st==='pending')return;
+  S.gedit={id:id,la:f.la,lb:f.lb};
+  drawAmend();
+}
+function amendStep(side,delta){
+  var g=S.gedit,need=needLegs();
+  var v=(side==='a'?g.la:g.lb)+delta;
+  if(v<0)v=0;if(v>need)v=need;
+  var other=side==='a'?g.lb:g.la;
+  if(v>=need&&other>=need)other=need-1;
+  if(side==='a'){g.la=v;g.lb=other;}else{g.lb=v;g.la=other;}
+  drawAmend();
+}
+function amendPick(side){
+  var need=needLegs();
+  S.gedit.la=side==='a'?need:0;
+  S.gedit.lb=side==='b'?need:0;
+  drawAmend();
+}
+function amendSave(){
+  var g=S.gedit,f=fix(g.id);if(!f){S.gedit=null;return closeModal();}
+  var need=needLegs(),was=f.st;
+  f.la=g.la;f.lb=g.lb;
+  if(Math.max(f.la,f.lb)>=need){
+    f.win=f.la>f.lb?f.a:f.b;f.st='done';f.board=null;
+  }else{
+    f.win=null;
+    if(was!=='live'){
+      var busy=busyTeams(),b=freeBoard();
+      if(b&&!busy[f.a]&&!busy[f.b]){f.st='live';f.board=b;}
+      else{f.st='pending';f.board=null;f.la=0;f.lb=0;}
+    }
+  }
+  S.gedit=null;modalHTML='';
+  afterResultChange(f);
+  if(!modalHTML)render();
+}
+function amendReset(){
+  var id=S.gedit.id;S.gedit=null;modalHTML='';
+  undo(id);
+  if(!modalHTML)render();
+}
+function askFlip(id){
+  var f=fix(id);if(!f||f.st!=='done')return;
+  var loser=f.win===f.a?f.b:f.a;
+  setModal('<div class="scrim"><div class="modal">'+
+    '<h2>Wrong winner?</h2>'+
+    '<p>Team '+f.win+' is down as beating Team '+loser+'. Are you sure you want to swap it round?</p>'+
+    '<div class="arows" style="margin-bottom:18px">'+
+      '<div class="arow"><span class="tnum">'+f.win+'</span><span class="tnames">'+esc(tname(f.win))+'</span>'+
+        '<span class="grouptag">currently the winner</span></div>'+
+      '<div class="arow win"><span class="tnum">'+loser+'</span><span class="tnames">'+esc(tname(loser))+'</span>'+
+        '<span class="grouptag">would take the win</span></div>'+
+    '</div>'+
+    '<div class="modalrow"><button class="btn" data-flip2="'+id+'">Yes, Team '+loser+' won</button>'+
+    '<button class="btn ghost" data-close="1">Leave it</button></div></div></div>');
+}
+function flipWinner(id){
+  var f=fix(id);if(!f||f.st!=='done')return;
+  f.win=f.win===f.a?f.b:f.a;
+  var t=f.la;f.la=f.lb;f.lb=t;
+  modalHTML='';
+  afterResultChange(f);
+  if(!modalHTML)render();
+}
+function drawAmend(){
+  var g=S.gedit,f=fix(g.id);if(!f)return;
+  var need=needLegs(),bo3=S.cfg.bestOf===3;
+  var lead=Math.max(g.la,g.lb)>=need?('Team '+(g.la>g.lb?f.a:f.b)+' takes it '+Math.max(g.la,g.lb)+'\u2013'+Math.min(g.la,g.lb))
+    :(g.la||g.lb?'Still in play at '+g.la+'\u2013'+g.lb:'Nothing scored yet');
+  function row(side){
+    var n=side==='a'?f.a:f.b,v=side==='a'?g.la:g.lb,win=Math.max(g.la,g.lb)>=need&&v>=need;
+    return '<div class="arow'+(win?' win':'')+'">'+
+      '<span class="tnum">'+n+'</span><span class="tnames">'+esc(tname(n))+'</span>'+
+      (bo3?'<span class="stepper"><button data-astep="'+side+'" data-adelta="-1" aria-label="One leg fewer">\u2212</button>'+
+        '<b>'+v+'</b><button data-astep="'+side+'" data-adelta="1" aria-label="One leg more">+</button></span>'
+        :'<button class="btn small'+(win?'':' ghost')+'" data-apick="'+side+'">'+(win?'Winner':'They won')+'</button>')+
+      '</div>';
+  }
+  var note=f.kind==='group'&&finalFix()?'<p style="color:#B92A20"><b>Heads up:</b> changing a group result clears the final, so it\u2019ll need throwing again.</p>':'';
+  setModal('<div class="scrim"><div class="modal">'+
+    '<h2>Amend game</h2>'+
+    '<p>'+(f.kind==='final'?'The final':'Round '+f.rd)+' \u00b7 '+(f.st==='live'?'on board '+f.board:'already played')+
+    ' \u00b7 '+lead+'</p>'+note+
+    '<div class="arows">'+row('a')+row('b')+'</div>'+
+    '<div class="modalrow" style="margin-top:20px"><button class="btn" data-asave="1">Save the score</button>'+
+    '<button class="btn ghost" data-areset="1">Back to unplayed</button>'+
+    '<button class="btn ghost" data-aclose="1">Cancel</button></div>'+
+    '</div></div>');
 }
 function maybeFinal(){
   if(groups().length<2||finalFix()||!allGroupsDone())return;
@@ -1054,7 +1199,7 @@ function openBoards(){
 
 /* ---------- events ---------- */
 document.addEventListener('click',function(e){
-  var t=e.target.closest('[data-cfg],[data-go],[data-add],[data-del],[data-up],[data-down],[data-person],[data-draw],[data-pick],[data-clearpairs],[data-confirmpairs],[data-grp],[data-split],[data-start],[data-redraw],[data-game],[data-side],[data-undo],[data-end],[data-reset],[data-checkout],[data-boards],[data-setboards],[data-cosave],[data-close],[data-tie],[data-tiecancel],[data-dec],[data-league],[data-back],[data-month],[data-addweek],[data-editweek],[data-eadd],[data-erm],[data-esave],[data-edel],[data-eclose],[data-reg],[data-lastorder],[data-crown],[data-crownwin],[data-crownshare],[data-uncrown]');
+  var t=e.target.closest('[data-cfg],[data-go],[data-add],[data-del],[data-up],[data-down],[data-person],[data-draw],[data-pick],[data-clearpairs],[data-confirmpairs],[data-grp],[data-split],[data-start],[data-redraw],[data-game],[data-side],[data-undo],[data-amend],[data-astep],[data-apick],[data-asave],[data-areset],[data-aclose],[data-estep],[data-newnight2],[data-wipe],[data-wipe2],[data-flip2],[data-end],[data-reset],[data-checkout],[data-boards],[data-setboards],[data-cosave],[data-close],[data-tie],[data-tiecancel],[data-dec],[data-league],[data-back],[data-month],[data-addweek],[data-editweek],[data-eadd],[data-erm],[data-esave],[data-edel],[data-eclose],[data-reg],[data-lastorder],[data-crown],[data-crownwin],[data-crownshare],[data-uncrown]');
   if(!t)return;
   var d=t.dataset;
 
@@ -1065,6 +1210,12 @@ document.addEventListener('click',function(e){
   if(d.addweek){return openWeekEditor(null);}
   if(d.editweek){return openWeekEditor(d.editweek);}
   if(d.eadd){harvest();S.edit.rows.push({n:'',w:0});return drawEditor();}
+  if(d.estep){
+    harvest();
+    var ei=parseInt(d.estep,10),ev=(S.edit.rows[ei].w||0)+parseInt(d.edelta,10);
+    S.edit.rows[ei].w=ev<0?0:(ev>99?99:ev);
+    return drawEditor();
+  }
   if(d.erm){harvest();S.edit.rows.splice(parseInt(d.erm,10),1);if(!S.edit.rows.length)S.edit.rows.push({n:'',w:0});return drawEditor();}
   if(d.esave){
     harvest();
@@ -1133,10 +1284,17 @@ document.addEventListener('click',function(e){
   }
   if(d.start){buildFixtures();S.manualRank={};S.finished=false;S.phase='play';return render();}
 
-  if(d.undo){e.stopPropagation();return undo(parseInt(d.undo,10));}
+  if(d.amend){e.stopPropagation();return openAmend(parseInt(d.amend,10));}
+  if(d.astep){return amendStep(d.astep,parseInt(d.adelta,10));}
+  if(d.apick){return amendPick(d.apick);}
+  if(d.asave){return amendSave();}
+  if(d.areset){return amendReset();}
+  if(d.aclose){S.gedit=null;return closeModal();}
   if(d.game){
     var gid=parseInt(d.game,10),gf=fix(gid);
     if(d.side&&gf&&gf.st==='live'){e.stopPropagation();return scoreLeg(gid,d.side);}
+    if(gf&&gf.st==='live')return openAmend(gid);
+    if(gf&&gf.st==='done')return;
     return startGame(gid);
   }
 
@@ -1151,13 +1309,14 @@ document.addEventListener('click',function(e){
   if(d.tie){return pickTie(parseInt(d.tie,10));}
   if(d.tiecancel){tiePending=null;S.pendingEnd=false;return closeModal();}
   if(d.close){return closeModal();}
-  if(d.reset){
-    if(confirm('Clear tonight and start a new one?')){
-      try{store.removeItem(KEY);}catch(err){}
-      S=fresh();tiePending=null;modalHTML='';render();
-    }
-    return;
+  if(d.reset){return askNewNight();}
+  if(d.newnight2){return newNight();}
+  if(d.wipe){return askWipe();}
+  if(d.wipe2){
+    try{store.removeItem(KEY);}catch(err){}
+    S=fresh();tiePending=null;modalHTML='';return render();
   }
+  if(d.flip2){modalHTML='';return flipWinner(parseInt(d.flip2,10));}
 });
 function addName(){
   var el=document.getElementById('nameIn');if(!el)return;
@@ -1166,6 +1325,12 @@ function addName(){
   render();
   var n=document.getElementById('nameIn');if(n)n.focus();
 }
+document.addEventListener('dblclick',function(e){
+  var t=e.target.closest?e.target.closest('[data-game]'):null;
+  if(!t)return;
+  var f=fix(parseInt(t.dataset.game,10));
+  if(f&&f.st==='done'){e.preventDefault();askFlip(f.id);}
+});
 document.addEventListener('change',function(e){
   if(e.target&&e.target.dataset&&e.target.dataset.date){
     S.cfg.date=e.target.value||todayISO();
@@ -1185,7 +1350,7 @@ if(typeof globalThis!=='undefined'&&globalThis.__DARTS_TEST__){
     assignGroups:assignGroups,splitPlan:splitPlan,record:record,render:render,
     isLastOfMonth:isLastOfMonth,isDeciderWeek:isDeciderWeek,leagueTable:leagueTable,
     leagueRow:leagueRow,orderedPeople:orderedPeople,doDraw:doDraw,nightRows:nightRows,
-    upsertWeek:upsertWeek,crownFor:crownFor,monthKey:monthKey,roster:roster,movePerson:movePerson,regulars:regulars,addPerson:addPerson,dropPerson:dropPerson,here:here,applyLastOrder:applyLastOrder,lastNight:lastNight};
+    upsertWeek:upsertWeek,crownFor:crownFor,monthKey:monthKey,roster:roster,movePerson:movePerson,openAmend:openAmend,amendStep:amendStep,amendPick:amendPick,amendSave:amendSave,amendReset:amendReset,undo:undo,newNight:newNight,flipWinner:flipWinner,harvest:harvest,regulars:regulars,addPerson:addPerson,dropPerson:dropPerson,here:here,applyLastOrder:applyLastOrder,lastNight:lastNight};
 }
 })();
 
