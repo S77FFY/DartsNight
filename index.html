@@ -163,7 +163,6 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
   display:flex;align-items:center;gap:9px;padding:5px 9px;border:2px solid rgba(11,12,8,.16);
   background:rgba(11,12,8,.03);border-radius:2px;
 }
-.srow .pos{font-family:var(--data);font-size:11px;width:20px;opacity:.5;text-align:right}
 .srow .n{
   font-family:var(--display);font-size:clamp(19px,1.7vw,26px);line-height:1;
   width:clamp(30px,2.4vw,38px);height:clamp(30px,2.4vw,38px);display:flex;align-items:center;justify-content:center;
@@ -173,7 +172,9 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
   font-family:var(--display);text-transform:uppercase;font-size:clamp(14px,1.25vw,19px);line-height:1.05;
   flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:.02em;
 }
-.srow .w{font-family:var(--display);font-size:clamp(22px,2vw,32px);line-height:1;margin-left:auto}
+.srow .w{font-family:var(--display);font-size:clamp(22px,2vw,32px);line-height:1;width:2.2ch;text-align:right}
+.srow .pos{font-family:var(--data);font-size:10px;letter-spacing:.06em;opacity:.5;width:3.4ch;text-align:right;margin-left:auto}
+.srow.lead .pos{opacity:.9;color:#8a6a12}
 .srow .legs{font-family:var(--data);font-size:10px;opacity:.5;width:34px;text-align:right}
 .srow.lead{border-color:var(--wire);background:rgba(201,153,43,.18)}
 .srow.playing{box-shadow:inset 4px 0 0 var(--orange)}
@@ -282,6 +283,25 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 .rack .chip .tick{position:absolute;top:-5px;right:-5px;width:24px;height:24px;border-radius:50%;
   background:var(--green);color:var(--chalk);font-size:13px;line-height:24px;text-align:center;z-index:2}
 .vtag{font-family:var(--data);font-size:12px;letter-spacing:.22em;text-transform:uppercase;opacity:.45;margin:0 0 14px}
+.ltable{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.ltable thead th{
+  font-family:var(--data);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  opacity:.55;font-weight:400;text-align:right;padding:0 8px 7px;border-bottom:2px solid var(--ink);
+}
+.ltable th.c-pos,.ltable th.c-name{text-align:left}
+.ltable td{padding:9px 8px;border-bottom:1px solid rgba(11,12,8,.16);text-align:right}
+.ltable tbody tr:nth-child(even) td{background:rgba(11,12,8,.035)}
+.ltable .c-pos{font-family:var(--data);font-size:12px;opacity:.5;width:3ch;text-align:left}
+.ltable .c-name{
+  font-family:var(--display);text-transform:uppercase;letter-spacing:.03em;
+  font-size:clamp(18px,1.9vw,26px);line-height:1.1;text-align:left;width:99%;
+}
+.ltable .c-num{font-family:var(--data);font-size:13px;opacity:.6;width:5ch}
+.ltable .c-win{font-family:var(--display);font-size:clamp(21px,2.1vw,30px);opacity:1;width:4ch}
+.ltable tr.lead td{background:rgba(201,153,43,.22)}
+.ltable tr.lead .c-pos{opacity:.8}
+.crownmark{color:var(--wire);font-size:.7em;margin-left:8px;vertical-align:.15em}
+.chev{font-family:var(--data);font-weight:700;line-height:1;padding:7px 16px !important}
 .monthnav{display:flex;align-items:center;gap:10px;margin:14px 0 4px;flex-wrap:wrap}
 .monthnav .btn.ghost{border-color:var(--ink);color:var(--ink);padding:6px 14px}
 .monthnav .btn.ghost:hover{background:var(--ink);color:var(--chalk)}
@@ -319,7 +339,7 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 (function(){
 'use strict';
 
-var VERSION='1.4.0';
+var VERSION='1.5.0';
 var KEY='wednesday-darts-v1';
 var store=(function(){
   try{var t='__t';localStorage.setItem(t,t);localStorage.removeItem(t);return localStorage;}
@@ -351,6 +371,7 @@ try{var raw=store.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&p.phase){S=Ob
 }}}catch(e){}
 function save(){try{store.setItem(KEY,JSON.stringify(S));}catch(e){}}
 
+function ordinal(n){var s2=['th','st','nd','rd'],v=n%100;return n+(s2[(v-20)%10]||s2[v]||s2[0]);}
 function pad(n){return n<10?'0'+n:''+n;}
 function todayISO(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
 function parseISO(s){var p=String(s||'').split('-');return new Date(+p[0],(+p[1]||1)-1,+p[2]||1);}
@@ -771,11 +792,20 @@ function viewLeague(){
       '<div class="grouptag">'+monthLabel(c.m)+' · '+c.w+' wins'+(c.shared?' · shared':'')+'</div></span></div>';
   }).join('');
 
-  var table=tbl.length?tbl.map(function(r,i){
-    return '<div class="srow'+(i===0&&r.w>0?' lead':'')+'"><span class="pos">'+(i+1)+'</span>'+
-      '<span class="who">'+esc(r.n)+'</span>'+
-      '<span class="legs">'+r.c+' wk</span><span class="w">'+r.w+'</span></div>';
-  }).join(''):'<p class="sub" style="opacity:.5">Nothing recorded for '+monthLabel(mk)+' yet.</p>';
+  var top1=tbl.length?tbl[0].w:0;
+  var table=tbl.length?('<table class="ltable"><thead><tr>'+
+    '<th class="c-pos">#</th><th class="c-name">Player</th>'+
+    '<th class="c-num">Wks</th><th class="c-num">Avg</th><th class="c-num c-win">Won</th></tr></thead><tbody>'+
+    tbl.map(function(r,i){
+      var lead=r.w===top1&&top1>0;
+      return '<tr'+(lead?' class="lead"':'')+'>'+
+        '<td class="c-pos">'+(i+1)+'</td>'+
+        '<td class="c-name">'+esc(r.n)+(lead?'<span class="crownmark">\u2605</span>':'')+'</td>'+
+        '<td class="c-num">'+r.c+'</td>'+
+        '<td class="c-num">'+(r.c?(r.w/r.c).toFixed(1):'0.0')+'</td>'+
+        '<td class="c-num c-win">'+r.w+'</td></tr>';
+    }).join('')+'</tbody></table>')
+    :'<p class="sub" style="opacity:.5">Nothing recorded for '+monthLabel(mk)+' yet.</p>';
 
   var wk=weeks.length?weeks.map(function(w){
     var rows=w.rows.slice().sort(function(a,b){return b.w-a.w;});
@@ -791,15 +821,14 @@ function viewLeague(){
     '<button class="btn ghost small" data-back="1">Back</button></div></div>'+
     '<div class="panel cream"><div class="sect">'+
     '<h1 class="big">The league</h1>'+
-    '<div class="monthnav"><button class="btn ghost small" data-month="-1">‹</button>'+
+    '<div class="monthnav"><button class="btn ghost small chev" data-month="-1" aria-label="Previous month">&lt;</button>'+
       '<span class="mlabel">'+monthLabel(mk)+'</span>'+
-      '<button class="btn ghost small" data-month="1">›</button>'+
+      '<button class="btn ghost small chev" data-month="1" aria-label="Next month">&gt;</button>'+
       '<button class="btn small" data-addweek="1">Add a week</button></div>'+
     (cr?'<div class="plc gold" style="margin:16px 0"><span class="rank">★</span><span><span class="who">'+esc(cr.names.join(' & '))+'</span>'+
         '<div class="grouptag">Crowned for '+monthLabel(mk)+(cr.shared?' · shared':'')+'</div></span>'+
         '<span class="rec"><button class="btn ghost small" data-uncrown="'+mk+'">Undo</button></span></div>':'')+
-    '<div class="eyebrow">Games won · '+monthLabel(mk)+'</div>'+
-    '<div class="stand-grid">'+table+'</div>'+
+    '<div class="eyebrow">Games won · '+monthLabel(mk)+'</div>'+table+
     (tbl.length&&!cr?'<div style="margin-top:18px"><button class="btn" data-crown="'+mk+'">'+
       (tied.length>1?'Settle the crown ('+tied.length+' level)':'Crown '+esc(tbl[0].n))+'</button></div>':'')+
     '<div class="eyebrow">Weeks</div>'+wk+
@@ -868,14 +897,17 @@ function viewPlay(){
   var multi=groups().length>1;
   var stand='';
   (multi?groups():['—']).forEach(function(g){
-    var list=standings(multi?g:null);
+    var list=standings(multi?g:null),pos={};
+    list.forEach(function(r,i){pos[r.n]=i+1;});
+    var byTeam=list.slice().sort(function(a,b){return a.n-b.n;});
     stand+='<div class="stand-head"><h2>'+(multi?'Group '+g:'Standings')+'</h2>'+
-      '<span>'+(multi?list.length+' teams · top one makes the final':'wins · legs')+'</span></div>'+
-      '<div class="stand-grid">'+list.map(function(r,i){
-        var cls='srow'+(i===0&&r.w>0?' lead':'')+(busy[r.n]?' playing':'');
-        return '<div class="'+cls+'"><span class="pos">'+(i+1)+'</span><span class="n">'+r.n+'</span>'+
+      '<span>'+(multi?list.length+' teams · top one makes the final':'in team order · position, wins')+'</span></div>'+
+      '<div class="stand-grid">'+byTeam.map(function(r){
+        var cls='srow'+(pos[r.n]===1&&r.w>0?' lead':'')+(busy[r.n]?' playing':'');
+        return '<div class="'+cls+'"><span class="n">'+r.n+'</span>'+
           '<span class="who">'+esc(tname(r.n))+'</span>'+
           (S.cfg.bestOf===3?'<span class="legs">'+r.lf+'-'+r.la+'</span>':'')+
+          '<span class="pos">'+(r.w?ordinal(pos[r.n]):'')+'</span>'+
           '<span class="w">'+r.w+'</span></div>';
       }).join('')+'</div>';
   });
@@ -1162,9 +1194,10 @@ function endNight(){
   var mk=monthKey(S.cfg.date),tbl=leagueTable(mk);
   var r1=record(first),r2=second?record(second):null;
   var pot=S.people.length*S.cfg.fee;
-  var lead=tbl.slice(0,5).map(function(r,i){
-    return '<div class="srow'+(i===0?' lead':'')+'"><span class="pos">'+(i+1)+'</span><span class="who">'+esc(r.n)+'</span><span class="w">'+r.w+'</span></div>';
-  }).join('');
+  var lead='<table class="ltable"><tbody>'+tbl.slice(0,5).map(function(r,i){
+    return '<tr'+(i===0?' class="lead"':'')+'><td class="c-pos">'+(i+1)+'</td>'+
+      '<td class="c-name">'+esc(r.n)+'</td><td class="c-num c-win">'+r.w+'</td></tr>';
+  }).join('')+'</tbody></table>';
   setModal('<div class="scrim"><div class="modal">'+
     '<h2>That\'s the night</h2>'+
     '<p>'+S.cfg.score+', '+(S.cfg.bestOf===3?'best of three':'single leg')+' · '+S.teams.length+' teams · £'+pot+' in the pot. '+
@@ -1174,7 +1207,7 @@ function endNight(){
       (second?'<div class="plc silver"><span class="rank">2</span><span><span class="who">'+esc(tname(second))+'</span></span><span class="rec">Team '+second+' · '+r2.w+' wins</span></div>':'')+
       (S.checkout.score?'<div class="plc"><span class="rank">✱</span><span><span class="who">'+esc(S.checkout.name||'Highest checkout')+'</span><div class="grouptag">Highest checkout · '+S.checkout.score+'</div></span></div>':'')+
     '</div>'+
-    '<div class="eyebrow">'+monthLabel(mk)+' so far</div><div class="stand-grid" style="margin-bottom:18px">'+lead+'</div>'+
+    '<div class="eyebrow">'+monthLabel(mk)+' so far</div>'+lead+
     '<div class="modalrow"><button class="btn" data-close="1">Back to the board</button>'+
     '<button class="btn ghost" data-league="1">Open the league</button>'+
     '<button class="btn ghost" data-reset="1">New night</button></div>'+
@@ -1350,7 +1383,7 @@ if(typeof globalThis!=='undefined'&&globalThis.__DARTS_TEST__){
     assignGroups:assignGroups,splitPlan:splitPlan,record:record,render:render,
     isLastOfMonth:isLastOfMonth,isDeciderWeek:isDeciderWeek,leagueTable:leagueTable,
     leagueRow:leagueRow,orderedPeople:orderedPeople,doDraw:doDraw,nightRows:nightRows,
-    upsertWeek:upsertWeek,crownFor:crownFor,monthKey:monthKey,roster:roster,movePerson:movePerson,openAmend:openAmend,amendStep:amendStep,amendPick:amendPick,amendSave:amendSave,amendReset:amendReset,undo:undo,newNight:newNight,flipWinner:flipWinner,harvest:harvest,regulars:regulars,addPerson:addPerson,dropPerson:dropPerson,here:here,applyLastOrder:applyLastOrder,lastNight:lastNight};
+    upsertWeek:upsertWeek,crownFor:crownFor,monthKey:monthKey,roster:roster,movePerson:movePerson,openAmend:openAmend,amendStep:amendStep,amendPick:amendPick,amendSave:amendSave,amendReset:amendReset,undo:undo,newNight:newNight,flipWinner:flipWinner,harvest:harvest,ordinal:ordinal,regulars:regulars,addPerson:addPerson,dropPerson:dropPerson,here:here,applyLastOrder:applyLastOrder,lastNight:lastNight};
 }
 })();
 
