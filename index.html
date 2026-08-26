@@ -64,6 +64,7 @@ input,select{font:inherit}
 .panel{flex:1 1 auto;overflow-y:auto;padding:22px clamp(16px,3vw,48px) 40px}
 .panel.cream{background:var(--chalk);color:var(--ink)}
 .sect{max-width:1100px;margin:0 auto}
+.sect.wide{max-width:1500px}
 .eyebrow{
   font-family:var(--data);font-size:12px;letter-spacing:.22em;text-transform:uppercase;
   opacity:.6;margin:26px 0 10px;display:flex;align-items:center;gap:12px;
@@ -185,30 +186,37 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 .fixhead{display:flex;align-items:baseline;gap:14px;margin:6px 0 8px}
 .fixhead h2{font-family:var(--display);text-transform:uppercase;letter-spacing:.1em;font-size:clamp(15px,1.5vw,21px);margin:0;color:var(--wire)}
 .fixhead span{font-family:var(--data);font-size:11px;letter-spacing:.14em;opacity:.5}
-.fixgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(124px,9.5vw,158px),1fr));gap:8px}
-.gm .dbl{position:absolute;bottom:2px;left:6px;font-family:var(--data);font-size:8px;letter-spacing:.06em;opacity:.35;text-transform:uppercase}
+.fixgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(150px,11vw,190px),1fr));gap:8px}
 .erow input[data-ename]{text-transform:uppercase;letter-spacing:.05em}
 .erow .stepper button{width:36px;height:36px;font-size:21px}
 .erow .stepper b{font-size:24px;width:36px}
 .arow .grouptag{margin-left:auto;white-space:nowrap}
 .gm{
-  position:relative;touch-action:manipulation;border:2px solid;border-radius:3px;padding:8px 6px 6px;
-  display:flex;flex-direction:column;align-items:center;gap:2px;min-height:88px;
+  position:relative;touch-action:manipulation;border:2px solid;border-radius:3px;padding:16px 4px 12px;
+  display:flex;flex-direction:column;align-items:center;gap:2px;min-height:96px;
   background:rgba(0,0,0,.25);cursor:pointer;transition:transform .12s ease;
 }
 .gm:hover{transform:translateY(-2px)}
-.gm .vs{display:flex;align-items:center;gap:8px}
+.gm .vs{display:flex;align-items:stretch;gap:4px;width:100%}
+.sidecol{
+  flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:1px;
+  padding:4px 2px 5px;background:none;border:none;
+}
+.sname{
+  font-family:var(--body);font-size:clamp(9px,.72vw,11px);text-transform:uppercase;letter-spacing:.02em;
+  line-height:1.25;opacity:.6;text-align:center;width:100%;
+}
+.sname .ln{display:block;overflow-wrap:anywhere}
+.sname .amp{opacity:.85}
+.slegs{font-family:var(--data);font-size:11px;letter-spacing:.1em;opacity:.7;line-height:1}
 .gm .side{
   font-family:var(--display);font-size:clamp(26px,2.6vw,40px);line-height:1;
-  min-width:clamp(34px,3vw,48px);text-align:center;padding:2px 2px;border-radius:50%;
-  border:3px solid transparent;
+  min-width:clamp(34px,3vw,46px);text-align:center;padding:1px 4px;border-radius:50%;
+  border:3px solid transparent;display:block;
 }
-.gm .x{font-family:var(--data);font-size:11px;opacity:.5}
-.gm .names{
-  font-family:var(--body);font-size:clamp(9px,.72vw,11px);text-transform:uppercase;letter-spacing:.03em;
-  opacity:.62;text-align:center;line-height:1.25;margin-top:auto;width:100%;
-}
+.gm .x{font-family:var(--data);font-size:11px;opacity:.4;align-self:center;padding-bottom:14px}
 .gm .rd{position:absolute;top:4px;left:6px;font-family:var(--data);font-size:9px;opacity:.45;letter-spacing:.08em}
+.gm .bd.nx{background:var(--wire);color:var(--ink)}
 .gm .bd{
   position:absolute;top:-1px;right:-1px;font-family:var(--display);font-size:19px;line-height:1;
   background:var(--orange);color:var(--ink);padding:2px 8px;border-radius:0 2px 0 4px;
@@ -216,21 +224,25 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 .gm .legs{font-family:var(--data);font-size:11px;letter-spacing:.14em;opacity:.75}
 .gm.pending{border-color:var(--green);background:rgba(30,122,58,.2)}
 .gm.next{border-color:var(--wire);background:rgba(201,153,43,.22);box-shadow:0 0 0 4px rgba(201,153,43,.3)}
-.gm.next .rd::after{content:" · next"}
 .gm.blocked{border-color:var(--green);background:rgba(30,122,58,.2);opacity:.42;cursor:not-allowed}
 .gm.blocked:hover{transform:none}
 .gm.live{border-color:var(--orange);background:rgba(226,115,42,.28)}
 .gm.done{border-color:var(--red);background:rgba(185,42,32,.24);opacity:.85}
-.gm.done .side.win{border-color:var(--wire);color:var(--wire)}
-.gm.done .side:not(.win){opacity:.42}
-.gm.live .side{cursor:pointer;border-color:rgba(239,231,210,.25)}
-.gm.live .side:hover{border-color:var(--chalk);background:rgba(239,231,210,.15)}
+.gm.done .sidecol.win .side{border-color:var(--wire);color:var(--wire)}
+.gm.done .sidecol.win .sname{opacity:.95;color:var(--wire)}
+.gm.done .sidecol:not(.win){opacity:.4}
+.gm.live .sidecol{cursor:pointer}
+.gm.live .sidecol .side{border-color:rgba(239,231,210,.3)}
+.gm.live .sidecol:hover .side{border-color:var(--chalk);color:var(--chalk)}
+.gm.live .sidecol:hover .sname{opacity:.95}
+.sidecol:focus-visible{outline:none}
+.sidecol:focus-visible .side{outline:3px solid var(--wire);outline-offset:2px}
 .gm.final{grid-column:span 2;border-width:3px}
 .gm .undo{
-  position:absolute;bottom:2px;right:4px;font-family:var(--data);font-size:9px;
-  letter-spacing:.1em;opacity:.5;transition:opacity .15s;padding:2px 4px;
+  position:absolute;bottom:1px;right:3px;font-size:13px;line-height:1;
+  opacity:.4;transition:opacity .15s;padding:3px 5px;
 }
-.gm:hover .undo{opacity:.9}
+.gm:hover .undo{opacity:.95}
 .gm .undo:hover{opacity:1;color:var(--wire)}
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.6;margin:14px 0 2px}
 .legend i{display:inline-block;width:11px;height:11px;border:2px solid;margin-right:5px;vertical-align:-1px;border-radius:2px}
@@ -264,15 +276,21 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 .plc.silver{background:rgba(11,12,8,.1)}
 /* ---------- league ---------- */
 .arows{display:flex;flex-direction:column;gap:10px}
-.arow{display:flex;align-items:center;gap:12px;border:2px solid var(--ink);border-radius:2px;padding:10px 12px}
+.arow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:2px solid var(--ink);border-radius:2px;padding:10px 12px}
 .arow.win{background:var(--wire)}
 .arow .tnames{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .arow .btn{margin-left:auto;border-color:var(--ink)}
 .arow .btn.ghost{background:none;color:var(--ink)}
 .stepper{display:flex;align-items:center;gap:2px;margin-left:auto}
-.stepper button{width:40px;height:40px;border:2px solid var(--ink);border-radius:2px;font-family:var(--display);font-size:24px;line-height:1}
+.stepper button{min-width:40px;padding:0 8px;height:40px;border:2px solid var(--ink);border-radius:2px;font-family:var(--display);font-size:24px;line-height:1}
 .stepper button:hover{background:var(--ink);color:var(--chalk)}
-.stepper b{font-family:var(--display);font-size:30px;width:44px;text-align:center}
+.stepper b{font-family:var(--display);font-size:30px;min-width:60px;text-align:center}
+.co-badge{position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);
+  background:var(--wire);color:var(--ink);font-family:var(--display);font-size:13px;line-height:1;
+  padding:3px 9px;border-radius:999px;border:2px solid var(--ink);z-index:2}
+.chip.co{cursor:pointer}
+.chip.co .co-score{font-family:var(--display);font-size:15px;color:var(--wire);opacity:1;margin-top:1px}
+.chip.co.on .co-score{color:var(--ink)}
 .rack .chip{width:86px;height:86px;border-width:2px;box-shadow:none;background:rgba(11,12,8,.05);color:rgba(11,12,8,.3);border-color:rgba(11,12,8,.28)}
 .rack .chip::before{opacity:.5}
 .rack .chip .nm{font-size:16px;max-width:60px;color:rgba(11,12,8,.55)}
@@ -282,6 +300,11 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 .rack .chip.on .nm{color:var(--ink)}
 .rack .chip .tick{position:absolute;top:-5px;right:-5px;width:24px;height:24px;border-radius:50%;
   background:var(--green);color:var(--chalk);font-size:13px;line-height:24px;text-align:center;z-index:2}
+.qrwrap{display:flex;justify-content:center;padding:14px;background:#EFE7D2;border:3px solid var(--ink);border-radius:3px;margin-bottom:14px}
+.qr{width:min(300px,60vw);height:auto;image-rendering:pixelated}
+.pastebox{flex:1 1 220px;min-width:0;border:2px solid var(--ink);background:none;color:inherit;
+  padding:10px 12px;border-radius:2px;font-family:var(--data);font-size:13px}
+#copyNote{align-self:center}
 .vtag{font-family:var(--data);font-size:12px;letter-spacing:.22em;text-transform:uppercase;opacity:.45;margin:0 0 14px}
 .ltable{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
 .ltable thead th{
@@ -289,19 +312,21 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
   opacity:.55;font-weight:400;text-align:right;padding:0 8px 7px;border-bottom:2px solid var(--ink);
 }
 .ltable th.c-pos,.ltable th.c-name{text-align:left}
-.ltable td{padding:9px 8px;border-bottom:1px solid rgba(11,12,8,.16);text-align:right}
+.ltable td{padding:11px 10px;border-bottom:1px solid rgba(11,12,8,.16);text-align:right}
+.ltable th:last-child,.ltable td:last-child{padding-right:0}
+.ltable th:first-child,.ltable td:first-child{padding-left:0}
 .ltable tbody tr:nth-child(even) td{background:rgba(11,12,8,.035)}
 .ltable .c-pos{font-family:var(--data);font-size:12px;opacity:.5;width:3ch;text-align:left}
 .ltable .c-name{
   font-family:var(--display);text-transform:uppercase;letter-spacing:.03em;
   font-size:clamp(18px,1.9vw,26px);line-height:1.1;text-align:left;width:99%;
 }
-.ltable .c-num{font-family:var(--data);font-size:13px;opacity:.6;width:5ch}
-.ltable .c-win{font-family:var(--display);font-size:clamp(21px,2.1vw,30px);opacity:1;width:4ch}
+.ltable .c-num{font-family:var(--data);font-size:clamp(13px,1.15vw,16px);opacity:.6;width:clamp(56px,6vw,90px)}
+.ltable .c-win{font-family:var(--display);font-size:clamp(24px,2.4vw,36px);opacity:1;width:clamp(52px,5vw,80px)}
 .ltable tr.lead td{background:rgba(201,153,43,.22)}
 .ltable tr.lead .c-pos{opacity:.8}
 .crownmark{color:var(--wire);font-size:.7em;margin-left:8px;vertical-align:.15em}
-.chev{font-family:var(--data);font-weight:700;line-height:1;padding:7px 16px !important}
+.chev{font-size:clamp(20px,2vw,26px);line-height:1;padding:4px 16px !important;font-weight:400}
 .monthnav{display:flex;align-items:center;gap:10px;margin:14px 0 4px;flex-wrap:wrap}
 .monthnav .btn.ghost{border-color:var(--ink);color:var(--ink);padding:6px 14px}
 .monthnav .btn.ghost:hover{background:var(--ink);color:var(--chalk)}
@@ -335,11 +360,12 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 <body>
 <div id="app"></div>
 <script>
+
 /* Wednesday Darts — single file, no dependencies. */
 (function(){
 'use strict';
 
-var VERSION='1.5.0';
+var VERSION='1.10.1';
 var KEY='wednesday-darts-v1';
 var store=(function(){
   try{var t='__t';localStorage.setItem(t,t);localStorage.removeItem(t);return localStorage;}
@@ -358,18 +384,51 @@ function fresh(){
     teams:[],             // {n,a,b,grp}
     fixtures:[],          // {id,grp,rd,a,b,st,board,la,lb,win,kind}
     checkout:{name:'',score:0},
+    checkouts:[],
+    co:null,
+    share:null,
+    imp:null,
     manualRank:{},        // teamNum -> rank within tie cluster
     finished:false,
+    appVersion:'',
     pendingEnd:false,
     pair:{sel:null,made:[]} // manual pairing scratch
   };
 }
 var S=fresh();
-try{var raw=store.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&p.phase){S=Object.assign(fresh(),p);
-  S.cfg=Object.assign(fresh().cfg,S.cfg||{});
-  S.league=Object.assign({weeks:[],crowns:[]},S.league||{});
-}}}catch(e){}
-function save(){try{store.setItem(KEY,JSON.stringify(S));}catch(e){}}
+var BAK=KEY+'.bak';
+try{
+  var raw=store.getItem(KEY);
+  if(raw){
+    var p=JSON.parse(raw);
+    if(p&&p.phase){
+      /* Before touching anything, keep a copy of the save exactly as the previous build
+         left it. Written once per upgrade, so a bad upgrade is always reversible. */
+      if(p.appVersion!==VERSION){
+        try{store.setItem(BAK,JSON.stringify({v:p.appVersion||'before 1.10.0',at:todayISO(),data:raw}));}catch(e2){}
+      }
+      S=Object.assign(fresh(),p);
+      S.cfg=Object.assign(fresh().cfg,S.cfg||{});
+      S.league=Object.assign({weeks:[],crowns:[]},S.league||{});
+      if(!Array.isArray(S.checkouts))S.checkouts=[];
+      /* Checkouts became one-per-player in 1.7.0; carry an older single figure across. */
+      if(!S.checkouts.length&&S.checkout&&S.checkout.score>0&&S.checkout.name)
+        S.checkouts=[{n:String(S.checkout.name).toUpperCase(),s:S.checkout.score}];
+      if(!S.co)S.co=null;
+      if(!S.share)S.share=null;
+      if(!S.imp)S.imp=null;
+    }
+  }
+}catch(e){}
+function backupInfo(){
+  try{
+    var b=store.getItem(BAK);
+    if(!b)return null;
+    var o=JSON.parse(b);
+    return o&&o.data?o:null;
+  }catch(e){return null;}
+}
+function save(){try{S.appVersion=VERSION;store.setItem(KEY,JSON.stringify(S));}catch(e){}}
 
 function ordinal(n){var s2=['th','st','nd','rd'],v=n%100;return n+(s2[(v-20)%10]||s2[v]||s2[0]);}
 function pad(n){return n<10?'0'+n:''+n;}
@@ -545,10 +604,22 @@ function buildFixtures(){
 function busyTeams(){
   var s={};S.fixtures.forEach(function(f){if(f.st==='live'){s[f.a]=1;s[f.b]=1;}});return s;
 }
+function liveGames(){return S.fixtures.filter(function(f){return f.st==='live';});}
+function stranded(){return liveGames().filter(function(f){return f.board>S.cfg.boards;});}
 function freeBoard(){
-  var used={};S.fixtures.forEach(function(f){if(f.st==='live'&&f.board)used[f.board]=1;});
+  var live=liveGames();
+  if(live.length>=S.cfg.boards)return null;      // every board is occupied, whatever it's numbered
+  var used={};live.forEach(function(f){if(f.board)used[f.board]=1;});
   for(var i=1;i<=S.cfg.boards;i++){if(!used[i])return i;}
   return null;
+}
+/* After a board frees up, pull any game sitting on a now-retired board down onto a real one. */
+function reboard(){
+  var s=stranded();
+  for(var i=0;i<s.length;i++){
+    var used={};liveGames().forEach(function(f){if(f.board)used[f.board]=1;});
+    for(var b=1;b<=S.cfg.boards;b++){if(!used[b]){s[i].board=b;break;}}
+  }
 }
 function nextUp(){
   var busy=busyTeams();
@@ -595,6 +666,676 @@ function tieCluster(list,idx){
     if(list[i].w===w&&S.manualRank[list[i].n]==null)c.push(list[i].n);
   }
   return c.length>1?c:null;
+}
+
+/* ---------- QR encoder: byte mode, error-correction level L, versions 1-15 ---------- */
+/* Everything derivable is computed rather than tabulated. The only tabulated values are
+   the EC codewords per block and the block count per version, which are cross-checked
+   against an independently known list of data capacities at load time. */
+var QR=(function(){
+  var EC_PER_BLOCK=[7,10,15,20,26,18,20,24,30,18,20,24,26,30,22,24,28,30,28,28,28,28,30,30,26,
+                    28,30,30,30,30,30,30,30,30,30,30,30,30,30,30];     // L, versions 1..40
+  var NUM_BLOCKS  =[1,1,1,1,1,2,2,2,2,4,4,4,4,4,6,6,6,6,7,8,8,9,9,10,12,
+                    12,12,13,14,15,16,17,18,19,19,20,21,22,24,25];     // L, versions 1..40
+  /* Alignment centres: 6, then evenly spaced back from size-7. Computed, not tabulated. */
+  function alignPositions(v){
+    if(v===1)return [];
+    var n=Math.floor(v/7)+2,size=v*4+17,last=size-7;
+    var step=Math.ceil((last-6)/(n-1));
+    if(step%2)step++;
+    var pos=[6];
+    for(var i=n-1;i>=1;i--)pos.splice(1,0,last-(n-1-i)*step);
+    return pos;
+  }
+
+  function rawDataModules(v){
+    var r=(16*v+128)*v+64;
+    if(v>=2){
+      var n=Math.floor(v/7)+2;
+      r-=(25*n-10)*n-55;
+      if(v>=7)r-=36;
+    }
+    return r;
+  }
+  function totalCodewords(v){return Math.floor(rawDataModules(v)/8);}
+  function dataCodewords(v){return totalCodewords(v)-EC_PER_BLOCK[v-1]*NUM_BLOCKS[v-1];}
+
+  /* --- GF(256), primitive polynomial 0x11D --- */
+  var EXP=new Uint8Array(512),LOG=new Uint8Array(256);
+  (function(){
+    var x=1;
+    for(var i=0;i<255;i++){EXP[i]=x;LOG[x]=i;x<<=1;if(x&0x100)x^=0x11D;}
+    for(i=255;i<512;i++)EXP[i]=EXP[i-255];
+  })();
+  function mul(a,b){return (a===0||b===0)?0:EXP[LOG[a]+LOG[b]];}
+  function genPoly(n){
+    var g=[1];
+    for(var i=0;i<n;i++){
+      var ng=new Array(g.length+1).fill(0);
+      for(var j=0;j<g.length;j++){
+        ng[j]^=g[j];                    // multiply by x
+        ng[j+1]^=mul(g[j],EXP[i]);      // plus the alpha^i term
+      }
+      g=ng;
+    }
+    return g;   // length n+1, leading coefficient 1
+  }
+  function ecCodewords(data,n){
+    var g=genPoly(n),rem=new Array(n).fill(0);
+    for(var i=0;i<data.length;i++){
+      var factor=data[i]^rem[0];
+      rem.shift();rem.push(0);
+      for(var j=0;j<n;j++)rem[j]^=mul(g[j+1],factor);
+    }
+    return rem;
+  }
+
+  /* --- BCH bits for format and version information --- */
+  function formatBits(mask){                 // EC level L = 01
+    var d=(0x01<<3)|mask;                    // 5 bits
+    var rem=d;
+    for(var i=0;i<10;i++)rem=(rem<<1)^(((rem>>>9)&1)*0x537);
+    return ((d<<10)|(rem&0x3FF))^0x5412;     // 15 bits
+  }
+  function versionBits(v){
+    var rem=v;
+    for(var i=0;i<12;i++)rem=(rem<<1)^(((rem>>>11)&1)*0x1F25);
+    return (v<<12)|(rem&0xFFF);              // 18 bits
+  }
+
+  /* --- matrix --- */
+  function newMatrix(size){
+    var m=[],r,c;
+    for(r=0;r<size;r++){m.push([]);for(c=0;c<size;c++)m[r].push(null);}
+    return m;
+  }
+  function setFinder(m,r0,c0){
+    for(var r=-1;r<8;r++)for(var c=-1;c<8;c++){
+      var rr=r0+r,cc=c0+c;
+      if(rr<0||cc<0||rr>=m.length||cc>=m.length)continue;
+      var dark=(r>=0&&r<=6&&(c===0||c===6))||(c>=0&&c<=6&&(r===0||r===6))||(r>=2&&r<=4&&c>=2&&c<=4);
+      m[rr][cc]=dark?1:0;
+    }
+  }
+  function functionPattern(v){
+    var size=v*4+17,m=newMatrix(size),i;
+    setFinder(m,0,0);setFinder(m,0,size-7);setFinder(m,size-7,0);
+    for(i=8;i<size-8;i++){m[6][i]=(i%2===0)?1:0;m[i][6]=(i%2===0)?1:0;}
+    var a=alignPositions(v);
+    for(var x=0;x<a.length;x++)for(var y=0;y<a.length;y++){
+      var cr=a[x],cc=a[y];
+      if((cr===6&&cc===6)||(cr===6&&cc===size-7)||(cr===size-7&&cc===6))continue;
+      for(var dr=-2;dr<=2;dr++)for(var dc=-2;dc<=2;dc++)
+        m[cr+dr][cc+dc]=(Math.max(Math.abs(dr),Math.abs(dc))!==1)?1:0;
+    }
+    // format information areas reserved, plus the permanently dark module
+    for(i=0;i<9;i++){
+      if(m[8][i]===null)m[8][i]=0;
+      if(m[i][8]===null)m[i][8]=0;
+    }
+    for(i=0;i<8;i++){
+      if(m[8][size-1-i]===null)m[8][size-1-i]=0;
+      if(m[size-1-i][8]===null)m[size-1-i][8]=0;
+    }
+    m[size-8][8]=1;
+    if(v>=7){
+      for(i=0;i<18;i++){
+        var r=Math.floor(i/3),c=i%3;
+        m[size-11+c][r]=0;m[r][size-11+c]=0;
+      }
+    }
+    return m;
+  }
+
+  function placeData(m,bits,reserved){
+    var size=m.length,idx=0,upward=true;
+    for(var right=size-1;right>=1;right-=2){
+      if(right===6)right--;
+      for(var vert=0;vert<size;vert++){
+        for(var j=0;j<2;j++){
+          var c=right-j,r=upward?(size-1-vert):vert;
+          if(reserved[r][c])continue;
+          m[r][c]=idx<bits.length?bits[idx]:0;
+          idx++;
+        }
+      }
+      upward=!upward;
+    }
+    return idx;
+  }
+  function maskFn(k,r,c){
+    switch(k){
+      case 0:return (r+c)%2===0;
+      case 1:return r%2===0;
+      case 2:return c%3===0;
+      case 3:return (r+c)%3===0;
+      case 4:return (Math.floor(r/2)+Math.floor(c/3))%2===0;
+      case 5:return (r*c)%2+(r*c)%3===0;
+      case 6:return ((r*c)%2+(r*c)%3)%2===0;
+      case 7:return ((r+c)%2+(r*c)%3)%2===0;
+    }
+  }
+  function penalty(m){
+    var size=m.length,p=0,r,c,i,run,dark=0;
+    for(r=0;r<size;r++){
+      run=1;
+      for(c=1;c<size;c++){
+        if(m[r][c]===m[r][c-1])run++;else{if(run>=5)p+=3+(run-5);run=1;}
+      }
+      if(run>=5)p+=3+(run-5);
+    }
+    for(c=0;c<size;c++){
+      run=1;
+      for(r=1;r<size;r++){
+        if(m[r][c]===m[r-1][c])run++;else{if(run>=5)p+=3+(run-5);run=1;}
+      }
+      if(run>=5)p+=3+(run-5);
+    }
+    for(r=0;r<size-1;r++)for(c=0;c<size-1;c++){
+      var v=m[r][c];
+      if(v===m[r][c+1]&&v===m[r+1][c]&&v===m[r+1][c+1])p+=3;
+    }
+    var pat1=[1,0,1,1,1,0,1,0,0,0,0],pat2=[0,0,0,0,1,0,1,1,1,0,1];
+    function match(get,n){
+      var hits=0;
+      for(var s=0;s+11<=n;s++){
+        var ok1=true,ok2=true;
+        for(var k=0;k<11;k++){
+          var val=get(s+k);
+          if(val!==pat1[k])ok1=false;
+          if(val!==pat2[k])ok2=false;
+        }
+        if(ok1)hits++;
+        if(ok2)hits++;
+      }
+      return hits;
+    }
+    for(r=0;r<size;r++)p+=40*match(function(i){return m[r][i];},size);
+    for(c=0;c<size;c++)p+=40*match(function(i){return m[i][c];},size);
+    for(r=0;r<size;r++)for(c=0;c<size;c++)if(m[r][c])dark++;
+    var pct=dark*100/(size*size);
+    p+=Math.floor(Math.abs(pct-50)/5)*10;
+    return p;
+  }
+
+  function bytesOf(str){
+    var out=[];
+    for(var i=0;i<str.length;i++){
+      var c=str.charCodeAt(i);
+      if(c<0x80)out.push(c);
+      else if(c<0x800){out.push(0xC0|(c>>6),0x80|(c&63));}
+      else{out.push(0xE0|(c>>12),0x80|((c>>6)&63),0x80|(c&63));}
+    }
+    return out;
+  }
+
+  function capacityBytes(v){
+    var d=dataCodewords(v);
+    return d-(v<10?2:3);          // 4-bit mode + 8/16-bit length, rounded to whole bytes
+  }
+  function pickVersion(len){
+    for(var v=1;v<=40;v++)if(capacityBytes(v)>=len)return v;
+    return 0;
+  }
+
+  function encode(text){
+    var data=bytesOf(text),v=pickVersion(data.length);
+    if(!v)return null;
+    var lenBits=v<10?8:16,bits=[],i,j;
+    function push(val,n){for(var k=n-1;k>=0;k--)bits.push((val>>>k)&1);}
+    push(4,4);push(data.length,lenBits);
+    for(i=0;i<data.length;i++)push(data[i],8);
+    var cap=dataCodewords(v)*8;
+    push(0,Math.min(4,cap-bits.length));
+    while(bits.length%8)bits.push(0);
+    var pad=[0xEC,0x11],pi=0;
+    while(bits.length<cap){push(pad[pi%2],8);pi++;}
+    var dcw=[];
+    for(i=0;i<bits.length;i+=8){
+      var b=0;for(j=0;j<8;j++)b=(b<<1)|bits[i+j];
+      dcw.push(b);
+    }
+    // split into blocks, add error correction, interleave
+    var nb=NUM_BLOCKS[v-1],ecn=EC_PER_BLOCK[v-1],total=dcw.length;
+    var shortLen=Math.floor(total/nb),numLong=total%nb,numShort=nb-numLong;
+    var blocks=[],ecs=[],off=0;
+    for(i=0;i<nb;i++){
+      var len=shortLen+(i>=numShort?1:0);
+      var blk=dcw.slice(off,off+len);off+=len;
+      blocks.push(blk);ecs.push(ecCodewords(blk,ecn));
+    }
+    var out=[];
+    for(i=0;i<shortLen+1;i++)for(j=0;j<nb;j++)if(i<blocks[j].length)out.push(blocks[j][i]);
+    for(i=0;i<ecn;i++)for(j=0;j<nb;j++)out.push(ecs[j][i]);
+    var outBits=[];
+    for(i=0;i<out.length;i++)for(j=7;j>=0;j--)outBits.push((out[i]>>>j)&1);
+
+    var fp=functionPattern(v),size=v*4+17;
+    var reserved=[];
+    for(i=0;i<size;i++){reserved.push([]);for(j=0;j<size;j++)reserved[i].push(fp[i][j]!==null);}
+
+    var best=null,bestScore=Infinity;
+    for(var mask=0;mask<8;mask++){
+      var m=[];
+      for(i=0;i<size;i++)m.push(fp[i].slice());
+      placeData(m,outBits,reserved);
+      for(i=0;i<size;i++)for(j=0;j<size;j++)
+        if(!reserved[i][j]&&maskFn(mask,i,j))m[i][j]^=1;
+      var fb=formatBits(mask);
+      for(i=0;i<15;i++){
+        var bit=(fb>>>i)&1;
+        // around the top-left finder
+        if(i<6)m[8][i]=bit;
+        else if(i===6)m[8][7]=bit;
+        else if(i===7)m[8][8]=bit;
+        else if(i===8)m[7][8]=bit;
+        else m[14-i][8]=bit;
+        // the split copy
+        if(i<8)m[size-1-i][8]=bit;
+        else m[8][size-15+i]=bit;
+      }
+      if(v>=7){
+        var vb=versionBits(v);
+        for(i=0;i<18;i++){
+          var b2=(vb>>>i)&1,rr=Math.floor(i/3),cc=i%3;
+          m[size-11+cc][rr]=b2;m[rr][size-11+cc]=b2;
+        }
+      }
+      var sc=penalty(m);
+      if(sc<bestScore){bestScore=sc;best={m:m,mask:mask,version:v};}
+    }
+    return best;
+  }
+
+  /* Reads the data bits back out of a finished matrix — used to prove a round trip. */
+  function readBack(res){
+    var m=res.m,v=res.version,size=m.length,mask=res.mask;
+    var fp=functionPattern(v),reserved=[],i,j;
+    for(i=0;i<size;i++){reserved.push([]);for(j=0;j<size;j++)reserved[i].push(fp[i][j]!==null);}
+    var um=[];
+    for(i=0;i<size;i++){um.push([]);for(j=0;j<size;j++)um[i].push(reserved[i][j]?m[i][j]:(m[i][j]^(maskFn(mask,i,j)?1:0)));}
+    var bits=[],upward=true;
+    for(var right=size-1;right>=1;right-=2){
+      if(right===6)right--;
+      for(var vert=0;vert<size;vert++)for(var k=0;k<2;k++){
+        var c=right-k,r=upward?(size-1-vert):vert;
+        if(reserved[r][c])continue;
+        bits.push(um[r][c]);
+      }
+      upward=!upward;
+    }
+    var cw=[];
+    for(i=0;i+8<=bits.length;i+=8){var b=0;for(j=0;j<8;j++)b=(b<<1)|bits[i+j];cw.push(b);}
+    // de-interleave back into data codewords
+    var nb=NUM_BLOCKS[v-1],total=dataCodewords(v);
+    var shortLen=Math.floor(total/nb),numLong=total%nb,numShort=nb-numLong;
+    var blocks=[];for(i=0;i<nb;i++)blocks.push([]);
+    var idx=0;
+    for(i=0;i<shortLen+1;i++)for(j=0;j<nb;j++){
+      var len=shortLen+(j>=numShort?1:0);
+      if(i<len){blocks[j].push(cw[idx++]);}
+    }
+    var flat=[];for(i=0;i<nb;i++)flat=flat.concat(blocks[i]);
+    var lenBits=v<10?8:16;
+    var mode=flat[0]>>4;
+    var n=lenBits===8?(((flat[0]&15)<<4)|(flat[1]>>4)):((((flat[0]&15)<<12)|(flat[1]<<4)|(flat[2]>>4))&0xFFFF);
+    var start=lenBits===8?1:2,out=[];
+    for(i=0;i<n;i++){
+      var hi=flat[start+i]&15,lo=flat[start+i+1]>>4;
+      out.push((hi<<4)|lo);
+    }
+    var str='';
+    for(i=0;i<out.length;i++)str+=String.fromCharCode(out[i]);
+    return {mode:mode,text:str,len:n};
+  }
+
+  return {encode:encode,readBack:readBack,capacityBytes:capacityBytes,
+          dataCodewords:dataCodewords,totalCodewords:totalCodewords,
+          ecCodewords:ecCodewords,formatBits:formatBits,versionBits:versionBits,
+          EC_PER_BLOCK:EC_PER_BLOCK,NUM_BLOCKS:NUM_BLOCKS,functionPattern:functionPattern,
+          alignPositions:alignPositions};
+})();
+
+/* ---------- handover between devices ---------- */
+/* The payload is a name dictionary plus index-referenced rows, gzipped where the browser
+   supports it, then base64url'd. Names repeat constantly across weeks, so the dictionary
+   plus gzip is what keeps this inside a scannable QR. */
+
+function b64url(bytes){
+  var s='';
+  for(var i=0;i<bytes.length;i++)s+=String.fromCharCode(bytes[i]);
+  return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function unb64url(str){
+  var s=String(str).replace(/-/g,'+').replace(/_/g,'/');
+  while(s.length%4)s+='=';
+  var bin=atob(s),out=new Uint8Array(bin.length);
+  for(var i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i);
+  return out;
+}
+function utf8(str){
+  if(typeof TextEncoder!=='undefined')return new TextEncoder().encode(str);
+  var out=[];
+  for(var i=0;i<str.length;i++){
+    var c=str.charCodeAt(i);
+    if(c<0x80)out.push(c);
+    else if(c<0x800)out.push(0xC0|(c>>6),0x80|(c&63));
+    else out.push(0xE0|(c>>12),0x80|((c>>6)&63),0x80|(c&63));
+  }
+  return new Uint8Array(out);
+}
+function fromUtf8(bytes){
+  if(typeof TextDecoder!=='undefined')return new TextDecoder().decode(bytes);
+  var s='';for(var i=0;i<bytes.length;i++)s+=String.fromCharCode(bytes[i]);
+  return decodeURIComponent(escape(s));
+}
+function gzip(bytes){
+  if(typeof CompressionStream==='undefined')return Promise.resolve(null);
+  try{
+    var cs=new CompressionStream('gzip');
+    var w=cs.writable.getWriter();w.write(bytes);w.close();
+    return new Response(cs.readable).arrayBuffer().then(function(b){return new Uint8Array(b);});
+  }catch(e){return Promise.resolve(null);}
+}
+function gunzip(bytes){
+  if(typeof DecompressionStream==='undefined')return Promise.reject(new Error('no gzip'));
+  var ds=new DecompressionStream('gzip');
+  var w=ds.writable.getWriter();w.write(bytes);w.close();
+  return new Response(ds.readable).arrayBuffer().then(function(b){return new Uint8Array(b);});
+}
+
+/* --- what goes in the payload ---
+   A flat binary format: a name dictionary followed by fixed-width records. Names are the
+   only text; everything else is indices and small integers, which gzip then squeezes hard. */
+function Writer(){this.b=[];}
+Writer.prototype.u8=function(v){this.b.push(v&255);return this;};
+Writer.prototype.u16=function(v){this.b.push(v&255,(v>>8)&255);return this;};
+Writer.prototype.str=function(s){var u=utf8(s),n=Math.min(u.length,255);this.u8(n);for(var i=0;i<n;i++)this.b.push(u[i]);return this;};
+Writer.prototype.date=function(d){var p=String(d||'2000-01-01').split('-');return this.u8((+p[0])-2000).u8(+p[1]).u8(+p[2]);};
+Writer.prototype.bytes=function(){return new Uint8Array(this.b);};
+
+function Reader(a){this.a=a;this.i=0;}
+Reader.prototype.u8=function(){return this.a[this.i++];};
+Reader.prototype.u16=function(){var v=this.a[this.i]|(this.a[this.i+1]<<8);this.i+=2;return v;};
+Reader.prototype.str=function(){var n=this.u8(),s=fromUtf8(this.a.subarray(this.i,this.i+n));this.i+=n;return s;};
+Reader.prototype.date=function(){var y=this.u8()+2000,m=this.u8(),d=this.u8();return y+'-'+pad(m)+'-'+pad(d);};
+
+var SCORES=[501,401,301];
+var GRPS=['\u2014','A','B','-'];
+function packBytes(scope){
+  var dict=[],ix={};
+  function id(n){var k=key(n);if(ix[k]==null){ix[k]=dict.length;dict.push(String(n));}return ix[k];}
+
+  var weeks=S.league.weeks,crowns=S.league.crowns;
+  if(scope==='month'){
+    var mk=monthKey(S.cfg.date),pm=shiftMonth(mk,-1);
+    weeks=weeks.filter(function(w){var m=monthKey(w.d);return m===mk||m===pm;});
+  }
+  if(scope==='tonight'){weeks=[];crowns=[];}
+  var night=(scope!=='league'&&S.teams.length);
+
+  var body=new Writer();
+  if(night){
+    body.u8(SCORES.indexOf(S.cfg.score)+1).u8(S.cfg.bestOf).u8(S.cfg.boards).u8(S.cfg.fee)
+        .u8((S.cfg.twoGroups?1:0)|(S.cfg.decider===true?2:0)|(S.cfg.decider===false?4:0))
+        .u8(S.cfg.splitA).date(S.cfg.date);
+    body.u8(S.people.length);
+    S.people.forEach(function(p){body.u8((id(p.name)<<1)|(p.out?1:0));});
+    body.u8(S.teams.length);
+    // group labels are one of a tiny set, so store an index rather than a character
+    S.teams.forEach(function(t){body.u8(t.n).u8(id(t.a)).u8(id(t.b)).u8(GRPS.indexOf(t.grp)+1);});
+    body.u16(S.fixtures.length);
+    S.fixtures.forEach(function(f){
+      body.u8(((f.a-1)<<4)|((f.b-1)&15));
+      body.u8(({pending:0,live:1,done:2}[f.st])|(f.la<<2)|(f.lb<<4)|((f.board||0)<<6));
+      body.u8((f.rd&127)|(f.kind==='final'?128:0));
+    });
+    body.u8(S.checkouts.length);
+    S.checkouts.forEach(function(c){body.u8(id(c.n)).u8(Math.min(c.s,255));});
+    var mr=Object.keys(S.manualRank);
+    body.u8(mr.length);
+    mr.forEach(function(k){body.u8(+k).u8(S.manualRank[k]);});
+  }else{
+    body.u8(0);
+  }
+  body.u8(Math.min(weeks.length,255));
+  weeks.slice(0,255).forEach(function(w){
+    body.date(w.d).u8(Math.min(w.rows.length,255));
+    w.rows.slice(0,255).forEach(function(r){body.u8(id(r.n)).u8(Math.min(r.w,255));});
+  });
+  body.u8(Math.min(crowns.length,255));
+  crowns.slice(0,255).forEach(function(c){
+    var p=c.m.split('-');
+    body.u8((+p[0])-2000).u8(+p[1]).u8(Math.min(c.w,255)).u8(c.shared?1:0).u8(c.names.length);
+    c.names.forEach(function(n){body.u8(id(n));});
+  });
+
+  var head=new Writer();
+  head.u8(2).u8(dict.length);
+  dict.forEach(function(n){head.str(n);});
+  var h=head.bytes(),b=body.bytes(),out=new Uint8Array(h.length+b.length);
+  out.set(h,0);out.set(b,h.length);
+  return out;
+}
+function unpackBytes(bytes){
+  var r=new Reader(bytes),i,j;
+  if(r.u8()!==2)throw new Error('That code came from a different version of the app.');
+  var dn=r.u8(),dict=[];
+  for(i=0;i<dn;i++)dict.push(r.str());
+  function nm(k){return dict[k]||'';}
+  var out={league:{weeks:[],crowns:[]},night:null};
+  var sc=r.u8();
+  if(sc){
+    var bo=r.u8(),bd=r.u8(),fee=r.u8(),flags=r.u8(),splitA=r.u8(),date=r.date();
+    var cfg={score:SCORES[sc-1],bestOf:bo,boards:bd,fee:fee,
+             twoGroups:!!(flags&1),decider:(flags&2)?true:((flags&4)?false:null),
+             splitA:splitA,date:date};
+    var pn=r.u8(),people=[];
+    for(i=0;i<pn;i++){var v=r.u8();people.push({id:'q'+i,name:nm(v>>1),out:!!(v&1)});}
+    var tn=r.u8(),teams=[];
+    for(i=0;i<tn;i++){
+      var tn2=r.u8(),ta=nm(r.u8()),tb=nm(r.u8()),g=r.u8();
+      teams.push({n:tn2,a:ta,b:tb,grp:GRPS[g-1]||GRPS[0]});
+    }
+    var grp={};teams.forEach(function(t){grp[t.n]=t.grp;});
+    var fn=r.u16(),st=['pending','live','done'],fx=[];
+    for(i=0;i<fn;i++){
+      var b0=r.u8(),b1=r.u8(),b2=r.u8();
+      var a=(b0>>4)+1,b=(b0&15)+1,s2=st[b1&3],la=(b1>>2)&3,lb=(b1>>4)&3,bb=(b1>>6)&3;
+      var kind=(b2&128)?'final':'group';
+      fx.push({id:i+1,grp:kind==='final'?'F':(grp[a]||GRPS[0]),rd:b2&127,a:a,b:b,st:s2,
+               board:s2==='live'?(bb||1):null,la:la,lb:lb,
+               win:s2==='done'?(la>lb?a:b):null,kind:kind});
+    }
+    var cn=r.u8(),cos=[];
+    for(i=0;i<cn;i++)cos.push({n:nm(r.u8()),s:r.u8()});
+    var mn=r.u8(),mr={};
+    for(i=0;i<mn;i++){var mk2=r.u8();mr[mk2]=r.u8();}
+    out.night={cfg:cfg,people:people,teams:teams,fixtures:fx,checkouts:cos,manualRank:mr};
+  }
+  var wn=r.u8();
+  for(i=0;i<wn;i++){
+    var d=r.date(),rn=r.u8(),rows=[];
+    for(j=0;j<rn;j++)rows.push({n:nm(r.u8()),w:r.u8()});
+    out.league.weeks.push({d:d,rows:rows});
+  }
+  var kn=r.u8();
+  for(i=0;i<kn;i++){
+    var y=r.u8()+2000,mo=r.u8(),w2=r.u8(),sh=r.u8(),nn=r.u8(),names=[];
+    for(j=0;j<nn;j++)names.push(nm(r.u8()));
+    out.league.crowns.push({m:y+'-'+pad(mo),names:names,w:w2,shared:!!sh});
+  }
+  return out;
+}
+function encodePayload(scope){
+  var raw=packBytes(scope);
+  return gzip(raw).then(function(gz){
+    if(gz&&gz.length<raw.length)return 'G'+b64url(gz);
+    return 'J'+b64url(raw);
+  });
+}
+function decodePayload(code){
+  var s=String(code||'').trim();
+  var hash=s.indexOf('#d=');
+  if(hash>=0)s=s.slice(hash+3);
+  if(!s)return Promise.reject(new Error('empty'));
+  var tag=s[0],body=s.slice(1);
+  var bytes;
+  try{bytes=unb64url(body);}catch(e){return Promise.reject(new Error('That code is not readable.'));}
+  var p=tag==='G'?gunzip(bytes):Promise.resolve(bytes);
+  return p.then(function(b){return unpackBytes(b);});
+}
+
+/* --- merging --- */
+function mergeLeague(inc){
+  var added=0,updated=0;
+  inc.weeks.forEach(function(w){
+    var found=null;
+    S.league.weeks.forEach(function(x){if(x.d===w.d)found=x;});
+    if(found){
+      if(JSON.stringify(found.rows)!==JSON.stringify(w.rows)){found.rows=w.rows;updated++;}
+    }else{S.league.weeks.push({d:w.d,rows:w.rows});added++;}
+  });
+  S.league.weeks.sort(function(a,b){return a.d<b.d?-1:1;});
+  var cr=0;
+  inc.crowns.forEach(function(c){
+    var had=false;
+    S.league.crowns.forEach(function(x){if(x.m===c.m){had=true;x.names=c.names;x.w=c.w;x.shared=c.shared;}});
+    if(!had){S.league.crowns.push(c);cr++;}
+  });
+  return {added:added,updated:updated,crowns:cr};
+}
+function takeNight(n){
+  if(!n)return;
+  S.cfg=Object.assign(S.cfg,n.cfg);
+  S.people=n.people;S.teams=n.teams;S.fixtures=n.fixtures;
+  S.checkouts=n.checkouts;S.manualRank=n.manualRank||{};
+  var t=coTop();S.checkout=t?{name:t.n,score:t.s}:{name:'',score:0};
+  S.finished=false;
+  S.phase=n.teams.length?'play':(n.people.length?'entry':'setup');
+}
+
+/* --- QR as SVG --- */
+function qrSVG(text,px){
+  var res=QR.encode(text);
+  if(!res)return null;
+  var m=res.m,n=m.length,q=4,size=n+q*2,d='';
+  for(var r=0;r<n;r++)for(var c=0;c<n;c++)
+    if(m[r][c])d+='M'+(c+q)+' '+(r+q)+'h1v1h-1z';
+  return '<svg class="qr" viewBox="0 0 '+size+' '+size+'" width="'+px+'" height="'+px+'" '+
+    'shape-rendering="crispEdges" role="img" aria-label="Handover code">'+
+    '<rect width="'+size+'" height="'+size+'" fill="#EFE7D2"/>'+
+    '<path d="'+d+'" fill="#0B0C08"/></svg>';
+}
+function shareURL(code){
+  var base=location.origin+location.pathname;
+  if(location.protocol!=='http:'&&location.protocol!=='https:')return null;
+  return base+'#d='+code;
+}
+
+/* --- the share sheet --- */
+var SCOPES=[['all','Everything'],['month','This month + last'],['league','League only'],['tonight','Tonight only']];
+function openShare(scope){
+  S.share={scope:scope||'all',code:null,url:null,err:null,ver:0};
+  drawShare();buildShare();
+}
+function buildShare(){
+  var want=S.share.scope;
+  return encodePayload(want).then(function(code){
+    var url=shareURL(code),text=url||code;
+    var res=text.length<=QR.capacityBytes(40)?QR.encode(text):null;
+    S.share.code=code;S.share.url=url;
+    S.share.ver=res?res.version:0;
+    S.share.err=res?null:'Too much history to fit in one code — pick a smaller slice, or copy the text instead.';
+    drawShare();
+  }).catch(function(e){S.share.err=String(e.message||e);drawShare();});
+}
+function drawShare(){
+  var sh=S.share,body;
+  if(!sh.code&&!sh.err){
+    body='<p style="opacity:.6">Building the code…</p>';
+  }else{
+    var text=sh.url||sh.code;
+    var svg=sh.ver?qrSVG(text,320):null;
+    var busy=sh.ver>=26;
+    body=(svg?'<div class="qrwrap">'+svg+'</div>':'')+
+      (sh.err?'<p style="color:#B92A20">'+esc(sh.err)+'</p>':'')+
+      (sh.ver?'<p style="opacity:.6" class="grouptag">'+(sh.ver*4+17)+' modules across'+
+        (busy?' — that\u2019s a dense one. Hold the other phone close, or send a smaller slice.':' — hold the other phone about a hand\u2019s width away.')+'</p>':'')+
+      (sh.url?'<p style="opacity:.7">Scan it with the other phone\u2019s camera. It opens this app with the data ready to bring in.</p>'
+             :'<p style="opacity:.7">This page is open from a file rather than a web address, so scanning won\u2019t open anything. Copy the text and paste it on the other device instead.</p>')+
+      '<div class="modalrow"><button class="btn ghost small" data-copycode="1">Copy the text code</button>'+
+      '<span class="grouptag" id="copyNote"></span></div>';
+  }
+  setModal('<div class="scrim"><div class="modal">'+
+    '<h2>Hand over</h2>'+
+    '<p>Move tonight\u2019s board and the league across to another phone. Nothing leaves the two devices — it\u2019s all inside the code itself.</p>'+
+    '<div class="choices" style="margin-bottom:16px">'+SCOPES.map(function(x){
+      return '<button class="choice" aria-pressed="'+(sh.scope===x[0])+'" data-scope="'+x[0]+'">'+x[1]+'</button>';
+    }).join('')+'</div>'+
+    body+
+    '<div class="eyebrow">Coming the other way</div>'+
+    '<p>Paste a code from another device to bring its data in.</p>'+
+    '<div class="modalrow"><input class="pastebox" id="pasteIn" placeholder="Paste code here" autocomplete="off">'+
+    '<button class="btn" data-paste="1">Import</button></div>'+
+    '<div class="modalrow" style="margin-top:18px"><button class="btn ghost" data-close="1">Done</button></div>'+
+    '</div></div>');
+}
+
+/* --- the import sheet --- */
+function openImport(data,fromScan){
+  S.imp={data:data,fromScan:!!fromScan};
+  var wk=data.league.weeks.length,ni=data.night;
+  var known={},fresh2=0;
+  S.league.weeks.forEach(function(w){known[w.d]=1;});
+  data.league.weeks.forEach(function(w){if(!known[w.d])fresh2++;});
+  setModal('<div class="scrim"><div class="modal">'+
+    '<h2>Import</h2>'+
+    '<p>This code holds '+wk+' week'+(wk===1?'':'s')+' of league'+
+      (fresh2?' ('+fresh2+' you don\u2019t have)':' (all of which you already have)')+
+      (ni?', plus a night in progress with '+ni.teams.length+' teams':'')+'.</p>'+
+    '<div class="arows" style="margin-bottom:18px">'+
+      '<div class="arow"><span class="tnames">Add the league weeks</span>'+
+      '<span class="grouptag">nothing of yours is lost</span></div>'+
+      (ni?'<div class="arow"><span class="tnames">Take the night in progress</span>'+
+      '<span class="grouptag">replaces your current board</span></div>':'')+
+    '</div>'+
+    '<div class="modalrow"><button class="btn" data-imp="league">Merge the league</button>'+
+    (ni?'<button class="btn" data-imp="all">Merge and take the night</button>':'')+
+    '<button class="btn ghost" data-imp="no">Cancel</button></div>'+
+    '</div></div>');
+}
+function doImport(mode){
+  var d=S.imp&&S.imp.data;
+  S.imp=null;
+  if(!d||mode==='no'){modalHTML='';clearHash();return render();}
+  var r=mergeLeague(d.league);
+  if(mode==='all')takeNight(d.night);
+  modalHTML='';clearHash();
+  var bits=[];
+  if(r.added)bits.push(r.added+' new week'+(r.added===1?'':'s'));
+  if(r.updated)bits.push(r.updated+' updated');
+  if(r.crowns)bits.push(r.crowns+' crown'+(r.crowns===1?'':'s'));
+  setModal('<div class="scrim"><div class="modal">'+
+    '<h2>Imported</h2><p>'+(bits.length?esc(bits.join(', '))+'.':'Nothing new — your league already had all of it.')+
+    (mode==='all'?' Tonight\u2019s board has been taken across too.':'')+'</p>'+
+    '<div class="modalrow"><button class="btn" data-close="1">Right you are</button></div></div></div>');
+}
+function clearHash(){
+  try{
+    if(location.hash&&history.replaceState)history.replaceState(null,'',location.pathname+location.search);
+  }catch(e){}
+}
+function checkIncomingHash(){
+  var h=String(location.hash||'');
+  if(h.indexOf('#d=')!==0)return;
+  decodePayload(h).then(function(data){openImport(data,true);})
+    .catch(function(e){
+      clearHash();
+      setModal('<div class="scrim"><div class="modal"><h2>Couldn\u2019t read that</h2>'+
+        '<p>'+esc(e.message||'The code was not readable.')+'</p>'+
+        '<div class="modalrow"><button class="btn" data-close="1">Close</button></div></div></div>');
+    });
 }
 
 /* ---------- rendering ---------- */
@@ -664,6 +1405,7 @@ function viewEntry(){
     chips+='<div class="chip '+role+'" data-person="'+p.id+'">'+
       '<button class="x" data-del="'+p.id+'" aria-label="Remove '+esc(p.name)+'">×</button>'+
       '<span class="nm">'+esc(p.name)+'</span><span class="rk">'+lbl+'</span>'+
+      (coBest(p.name)?'<span class="co-badge">'+coBest(p.name)+'</span>':'')+
       (dec||p.out?'':'<span class="mv"><button data-up="'+p.id+'" aria-label="'+(role==='nonplayer'?'Promote '+esc(p.name)+' to the players':'Move '+esc(p.name)+' up the players')+'">▲</button>'+
         '<button data-down="'+p.id+'" aria-label="'+(role==='player'?'Drop '+esc(p.name)+' to the non-players':'Move '+esc(p.name)+' down the non-players')+'">▼</button></span>')+
       '</div>';
@@ -818,12 +1560,13 @@ function viewLeague(){
 
   return '<div class="topbar"><div class="brand">Wednesday <b>Darts</b></div>'+
     '<div class="meta"><span class="pill">League</span>'+
+    '<button class="btn ghost small" data-share="1">Hand over</button>'+
     '<button class="btn ghost small" data-back="1">Back</button></div></div>'+
-    '<div class="panel cream"><div class="sect">'+
+    '<div class="panel cream"><div class="sect wide">'+
     '<h1 class="big">The league</h1>'+
-    '<div class="monthnav"><button class="btn ghost small chev" data-month="-1" aria-label="Previous month">&lt;</button>'+
+    '<div class="monthnav"><button class="btn ghost small chev" data-month="-1" aria-label="Previous month">\u2190</button>'+
       '<span class="mlabel">'+monthLabel(mk)+'</span>'+
-      '<button class="btn ghost small chev" data-month="1" aria-label="Next month">&gt;</button>'+
+      '<button class="btn ghost small chev" data-month="1" aria-label="Next month">\u2192</button>'+
       '<button class="btn small" data-addweek="1">Add a week</button></div>'+
     (cr?'<div class="plc gold" style="margin:16px 0"><span class="rank">★</span><span><span class="who">'+esc(cr.names.join(' & '))+'</span>'+
         '<div class="grouptag">Crowned for '+monthLabel(mk)+(cr.shared?' · shared':'')+'</div></span>'+
@@ -833,7 +1576,14 @@ function viewLeague(){
       (tied.length>1?'Settle the crown ('+tied.length+' level)':'Crown '+esc(tbl[0].n))+'</button></div>':'')+
     '<div class="eyebrow">Weeks</div>'+wk+
     (trophy?'<div class="eyebrow">Trophy cabinet</div><div class="teamlist">'+trophy+'</div>':'')+
-    '<div class="eyebrow">Danger</div><button class="btn ghost small" data-wipe="1" style="border-color:#B92A20;color:#B92A20">Delete every week and start over</button>'+
+    '<div class="eyebrow">Danger</div>'+
+    (function(){
+      var b=backupInfo();
+      return b?'<p class="sub">A copy of your data from '+esc(b.v)+' was kept automatically when this version first opened. '+
+        'If anything looks wrong, you can put it back.</p>'+
+        '<div class="modalrow" style="margin-bottom:14px"><button class="btn ghost small" data-restore="1">Restore the '+esc(b.v)+' backup</button></div>':'';
+    })()+
+    '<button class="btn ghost small" data-wipe="1" style="border-color:#B92A20;color:#B92A20">Delete every week and start over</button>'+
     '</div></div>';
 }
 function openWeekEditor(d){
@@ -932,22 +1682,39 @@ function viewPlay(){
     '<span><i style="border-color:var(--red)"></i>Played</span>'+
     '<span>Tap a game to put it on · tap the winning number to end it</span></div>';
 
-  var co=S.checkout.score?('Checkout '+S.checkout.score+(S.checkout.name?' · '+esc(S.checkout.name):'')):'Record checkout';
+  var ct=coTop();
+  var co=ct?('Checkout '+ct.s+' · '+esc(ct.n)):'Record checkout';
   var canEnd=multi?(!!fin&&fin.st==='done'):allGroupsDone();
   return '<div id="board" class="board">'+
     '<div class="topbar"><div class="brand">Wednesday <b>Darts</b></div>'+
     '<div class="meta">'+
       '<span class="pill">'+dayLabel(S.cfg.date)+'</span>'+
-      '<span class="pill">'+S.cfg.score+' · '+(S.cfg.bestOf===3?'Best of 3':'Single leg')+'</span>'+
+      '<span class="pill tap" data-format="1">'+S.cfg.score+' · '+(S.cfg.bestOf===3?'Best of 3':'Single leg')+'</span>'+
       '<span class="pill tap" data-boards="1">'+S.cfg.boards+' board'+(S.cfg.boards>1?'s':'')+'</span>'+
       '<span class="pill gold tap" data-checkout="1">'+co+'</span>'+
       '<span class="pill gold">Pot £'+(S.people.length*S.cfg.fee)+'</span>'+
       '<button class="btn ghost small" data-league="1">League</button>'+
+      '<button class="btn ghost small" data-share="1">Hand over</button>'+
       '<button class="btn small" data-end="1" '+(canEnd?'':'disabled')+'>End the night</button>'+
       '<button class="btn ghost small" data-reset="1">New night</button>'+
     '</div></div>'+
     '<div class="standings">'+stand+'</div>'+
     '<div class="fixwrap">'+fx+'</div></div>';
+}
+/* Always two lines: the first name, then "& " and the second. */
+function tnameHTML(n){
+  var t=team(n);
+  if(!t)return '<span class="sname"><span class="ln">\u2014</span></span>';
+  return '<span class="sname"><span class="ln">'+esc(t.a)+'</span>'+
+         '<span class="ln amp">&amp; '+esc(t.b)+'</span></span>';
+}
+function sideHTML(f,which){
+  var n=which==='a'?f.a:f.b,lg=which==='a'?f.la:f.lb;
+  var win=f.win===n;
+  return '<button class="sidecol'+(win?' win':'')+'" data-side="'+which+'" data-game="'+f.id+'">'+
+    '<span class="side">'+n+'</span>'+
+    (S.cfg.bestOf===3&&(f.st==='live'||f.st==='done')?'<span class="slegs">'+lg+'</span>':'')+
+    tnameHTML(n)+'</button>';
 }
 function gameHTML(f,busy,nid,boardFree){
   var cls='gm '+(f.kind==='final'?'final ':'');
@@ -957,18 +1724,14 @@ function gameHTML(f,busy,nid,boardFree){
   else if(busy[f.a]||busy[f.b]||!boardFree)cls+='blocked';
   else cls+='pending';
   var legs='';
-  if(S.cfg.bestOf===3&&(f.st==='live'||f.st==='done'))legs='<span class="legs">'+f.la+' — '+f.lb+'</span>';
   return '<div class="'+cls+'" data-game="'+f.id+'">'+
     '<span class="rd">'+(f.kind==='final'?'FINAL':'R'+f.rd)+'</span>'+
     (f.st==='live'?'<span class="bd">'+f.board+'</span>':'')+
+    (f.st==='pending'&&f.id===nid?'<span class="bd nx">?</span>':'')+
     '<span class="vs">'+
-      '<button class="side'+(f.win===f.a?' win':'')+'" data-side="a" data-game="'+f.id+'">'+f.a+'</button>'+
-      '<span class="x">v</span>'+
-      '<button class="side'+(f.win===f.b?' win':'')+'" data-side="b" data-game="'+f.id+'">'+f.b+'</button>'+
+      sideHTML(f,'a')+'<span class="x">v</span>'+sideHTML(f,'b')+
     '</span>'+legs+
-    '<span class="names">'+esc(tname(f.a))+'<br>'+esc(tname(f.b))+'</span>'+
-    (f.st!=='pending'?'<button class="undo" data-amend="'+f.id+'">amend</button>':'')+
-    (f.st==='done'?'<span class="dbl">double-tap to swap</span>':'')+
+    (f.st!=='pending'?'<button class="undo" data-amend="'+f.id+'" aria-label="Edit this game">\u270e</button>':'')+
     '</div>';
 }
 function fix(id){for(var i=0;i<S.fixtures.length;i++){if(S.fixtures[i].id===id)return S.fixtures[i];}return null;}
@@ -985,6 +1748,7 @@ function scoreLeg(id,side){
   if(side==='a')f.la++;else f.lb++;
   if(Math.max(f.la,f.lb)>=needLegs()){
     f.win=f.la>f.lb?f.a:f.b;f.st='done';f.board=null;
+    reboard();
     maybeFinal();
   }
   render();
@@ -1000,6 +1764,7 @@ function afterResultChange(f){
 function undo(id){
   var f=fix(id);if(!f)return;
   f.st='pending';f.board=null;f.la=0;f.lb=0;f.win=null;
+  reboard();
   afterResultChange(f);
   if(!modalHTML)render();
 }
@@ -1059,7 +1824,7 @@ function amendSave(){
   var need=needLegs(),was=f.st;
   f.la=g.la;f.lb=g.lb;
   if(Math.max(f.la,f.lb)>=need){
-    f.win=f.la>f.lb?f.a:f.b;f.st='done';f.board=null;
+    f.win=f.la>f.lb?f.a:f.b;f.st='done';f.board=null;reboard();
   }else{
     f.win=null;
     if(was!=='live'){
@@ -1116,12 +1881,12 @@ function drawAmend(){
   }
   var note=f.kind==='group'&&finalFix()?'<p style="color:#B92A20"><b>Heads up:</b> changing a group result clears the final, so it\u2019ll need throwing again.</p>':'';
   setModal('<div class="scrim"><div class="modal">'+
-    '<h2>Amend game</h2>'+
+    '<h2>'+(f.st==='live'?'Game in play':'Amend game')+'</h2>'+
     '<p>'+(f.kind==='final'?'The final':'Round '+f.rd)+' \u00b7 '+(f.st==='live'?'on board '+f.board:'already played')+
     ' \u00b7 '+lead+'</p>'+note+
     '<div class="arows">'+row('a')+row('b')+'</div>'+
     '<div class="modalrow" style="margin-top:20px"><button class="btn" data-asave="1">Save the score</button>'+
-    '<button class="btn ghost" data-areset="1">Back to unplayed</button>'+
+    '<button class="btn ghost" data-areset="1">'+(f.st==='live'?'Cancel this game':'Back to unplayed')+'</button>'+
     '<button class="btn ghost" data-aclose="1">Cancel</button></div>'+
     '</div></div>');
 }
@@ -1205,7 +1970,8 @@ function endNight(){
     '<div class="podium">'+
       '<div class="plc gold"><span class="rank">1</span><span><span class="who">'+esc(tname(first))+'</span></span><span class="rec">Team '+first+' · '+r1.w+' wins</span></div>'+
       (second?'<div class="plc silver"><span class="rank">2</span><span><span class="who">'+esc(tname(second))+'</span></span><span class="rec">Team '+second+' · '+r2.w+' wins</span></div>':'')+
-      (S.checkout.score?'<div class="plc"><span class="rank">✱</span><span><span class="who">'+esc(S.checkout.name||'Highest checkout')+'</span><div class="grouptag">Highest checkout · '+S.checkout.score+'</div></span></div>':'')+
+      (coTop()?'<div class="plc"><span class="rank">✱</span><span><span class="who">'+esc(coTop().n)+'</span><div class="grouptag">Highest checkout · '+coTop().s+
+        (S.checkouts.length>1?' · next best '+S.checkouts.slice().sort(function(a,b){return b.s-a.s;})[1].s:'')+'</div></span></div>':'')+
     '</div>'+
     '<div class="eyebrow">'+monthLabel(mk)+' so far</div>'+lead+
     '<div class="modalrow"><button class="btn" data-close="1">Back to the board</button>'+
@@ -1213,26 +1979,122 @@ function endNight(){
     '<button class="btn ghost" data-reset="1">New night</button></div>'+
     '</div></div>');
 }
-function openCheckout(){
+function coBest(name){
+  var k=key(name),b=0;
+  S.checkouts.forEach(function(c){if(key(c.n)===k&&c.s>b)b=c.s;});
+  return b;
+}
+function coTop(){
+  var best=null;
+  S.checkouts.forEach(function(c){if(!best||c.s>best.s)best=c;});
+  return best;
+}
+function openCheckout(name){
+  S.co={name:name||'',score:0};
+  drawCheckout();
+}
+function coStep(delta){
+  var v=S.co.score+delta;
+  if(v<0)v=0;if(v>170)v=170;
+  S.co.score=v;drawCheckout();
+}
+function drawCheckout(){
+  var c=S.co,top=coTop();
+  var chips=S.people.map(function(p){
+    var on=key(p.name)===key(c.name),b=coBest(p.name);
+    return '<div class="chip co'+(on?' on':'')+'" data-coname="'+esc(p.name)+'">'+
+      '<span class="nm">'+esc(p.name)+'</span>'+
+      (b?'<span class="rk co-score">'+b+'</span>':'')+'</div>';
+  }).join('');
+  var valid=c.name&&c.score>=2;
+  var beats=valid&&(!top||c.score>top.s);
   setModal('<div class="scrim"><div class="modal">'+
-    '<h2>Highest checkout</h2><p>Only beat it, don\'t match it. Prize goes out at the end of the night.</p>'+
-    '<div class="modalrow" style="margin-bottom:18px">'+
-    '<span class="field"><label>Player</label><input id="coName" value="'+esc(S.checkout.name)+'" maxlength="20" autocomplete="off"></span>'+
-    '<span class="field"><label>Checkout</label><input id="coScore" type="number" inputmode="numeric" min="2" max="170" value="'+(S.checkout.score||'')+'"></span></div>'+
-    '<div class="modalrow"><button class="btn" data-cosave="1">Save</button>'+
+    '<h2>Checkout</h2>'+
+    '<p>'+(top?'Best so far is '+esc(top.n)+' on '+top.s+'. ':'Nothing recorded yet. ')+
+    'Tap whoever hit it, then dial in the score.</p>'+
+    '<div class="chipgrid rack" style="margin-bottom:18px">'+
+      (chips||'<span class="sub" style="opacity:.5">Nobody\u2019s on the board yet.</span>')+'</div>'+
+    '<div class="arows"><div class="arow'+(beats?' win':'')+'">'+
+      '<span class="tnames">'+(c.name?esc(c.name):'Pick a name')+'</span>'+
+      '<span class="stepper">'+
+        '<button data-costep="-10" aria-label="Ten less">\u2212\u2212</button>'+
+        '<button data-costep="-1" aria-label="One less">\u2212</button>'+
+        '<b>'+c.score+'</b>'+
+        '<button data-costep="1" aria-label="One more">+</button>'+
+        '<button data-costep="10" aria-label="Ten more">++</button>'+
+      '</span></div></div>'+
+    (valid&&!beats?'<p style="margin-top:12px;opacity:.7">That won\u2019t beat '+esc(top.n)+'\u2019s '+top.s+', but it\u2019ll still be saved against their name.</p>':'')+
+    '<div class="modalrow" style="margin-top:18px"><button class="btn" data-cosave="1" '+(valid?'':'disabled')+'>Save</button>'+
+    (c.name&&coBest(c.name)?'<button class="btn ghost" data-coclear="'+esc(c.name)+'">Clear '+esc(c.name)+'\u2019s</button>':'')+
     '<button class="btn ghost" data-close="1">Cancel</button></div></div></div>');
 }
-function openBoards(){
+function coSave(){
+  var c=S.co;
+  if(!c.name||c.score<2)return;
+  var k=key(c.name),done=false;
+  S.checkouts.forEach(function(x){if(key(x.n)===k){if(c.score>x.s)x.s=c.score;done=true;}});
+  if(!done)S.checkouts.push({n:c.name,s:c.score});
+  var t=coTop();
+  S.checkout=t?{name:t.n,score:t.s}:{name:'',score:0};
+  S.co=null;return closeModal();
+}
+function openFormat(){
+  var started=S.fixtures.some(function(f){return f.st!=='pending';});
+  var lg=liveGames().length;
   setModal('<div class="scrim"><div class="modal">'+
-    '<h2>Boards in use</h2><p>Drop to one if a board goes down, or add a third if it frees up. Games already on a board keep playing.</p>'+
+    '<h2>Format</h2><p>Change it whenever you like \u2014 results already on the board are kept exactly as they are.</p>'+
+    '<div class="eyebrow">Game</div><div class="choices">'+[501,401,301].map(function(n){
+      return '<button class="choice" aria-pressed="'+(S.cfg.score===n)+'" data-setscore="'+n+'">'+n+'</button>';}).join('')+'</div>'+
+    '<div class="eyebrow">Match length</div><div class="choices">'+
+      '<button class="choice" aria-pressed="'+(S.cfg.bestOf===1)+'" data-setbo="1">Single leg</button>'+
+      '<button class="choice" aria-pressed="'+(S.cfg.bestOf===3)+'" data-setbo="3">Best of 3<small>first to 2</small></button>'+
+    '</div>'+
+    (started?'<p style="margin-top:16px;opacity:.7">Games already played keep their result. '+
+      (lg?'The '+lg+' game'+(lg>1?'s':'')+' in play will be re-checked against the new length.':'')+'</p>':'')+
+    '<div class="modalrow" style="margin-top:18px"><button class="btn" data-close="1">Done</button></div></div></div>');
+}
+/* Switching length mid-night: settle or reopen anything in play under the new rule. */
+function applyBestOf(n){
+  S.cfg.bestOf=n;
+  var need=needLegs();
+  liveGames().forEach(function(f){
+    if(f.la>=need&&f.lb>=need){f.la=0;f.lb=0;return;}   // both past the post: start the match again
+    if(Math.max(f.la,f.lb)>=need){
+      f.win=f.la>f.lb?f.a:f.b;f.st='done';f.board=null;
+    }
+  });
+  reboard();
+  S.finished=false;
+  S.fixtures=S.fixtures.filter(function(x){return x.kind!=='final';});
+  S.manualRank={};
+  if(allGroupsDone())maybeFinal();
+}
+
+function openBoards(){
+  var live=liveGames(),str=stranded();
+  var warn='';
+  if(str.length){
+    warn='<p style="color:#B92A20"><b>'+str.length+' game'+(str.length>1?'s are':' is')+' still on board '+
+      str.map(function(f){return f.board;}).join(' and ')+', which you\u2019ve just retired.</b> '+
+      'Finish '+(str.length>1?'them':'it')+' as normal, or send '+(str.length>1?'them':'it')+' back to the pool to be replayed later.</p>'+
+      '<div class="arows" style="margin-bottom:16px">'+str.map(function(f){
+        return '<div class="arow"><span class="tnum">'+f.board+'</span>'+
+          '<span class="tnames">'+f.a+' v '+f.b+'</span>'+
+          '<button class="btn small" data-pull="'+f.id+'">Send back</button></div>';
+      }).join('')+'</div>';
+  }
+  setModal('<div class="scrim"><div class="modal">'+
+    '<h2>Boards in use</h2><p>Drop to one if a board goes down, or add a third if it frees up. '+
+    live.length+' game'+(live.length===1?' is':'s are')+' being played right now.</p>'+
     '<div class="choices" style="margin-bottom:18px">'+[1,2,3].map(function(n){
       return '<button class="choice" aria-pressed="'+(S.cfg.boards===n)+'" data-setboards="'+n+'">'+n+'</button>';}).join('')+'</div>'+
+    warn+
     '<div class="modalrow"><button class="btn" data-close="1">Done</button></div></div></div>');
 }
 
 /* ---------- events ---------- */
 document.addEventListener('click',function(e){
-  var t=e.target.closest('[data-cfg],[data-go],[data-add],[data-del],[data-up],[data-down],[data-person],[data-draw],[data-pick],[data-clearpairs],[data-confirmpairs],[data-grp],[data-split],[data-start],[data-redraw],[data-game],[data-side],[data-undo],[data-amend],[data-astep],[data-apick],[data-asave],[data-areset],[data-aclose],[data-estep],[data-newnight2],[data-wipe],[data-wipe2],[data-flip2],[data-end],[data-reset],[data-checkout],[data-boards],[data-setboards],[data-cosave],[data-close],[data-tie],[data-tiecancel],[data-dec],[data-league],[data-back],[data-month],[data-addweek],[data-editweek],[data-eadd],[data-erm],[data-esave],[data-edel],[data-eclose],[data-reg],[data-lastorder],[data-crown],[data-crownwin],[data-crownshare],[data-uncrown]');
+  var t=e.target.closest('[data-cfg],[data-go],[data-add],[data-del],[data-up],[data-down],[data-person],[data-draw],[data-pick],[data-clearpairs],[data-confirmpairs],[data-grp],[data-split],[data-start],[data-redraw],[data-game],[data-side],[data-undo],[data-amend],[data-astep],[data-apick],[data-asave],[data-areset],[data-aclose],[data-estep],[data-newnight2],[data-wipe],[data-wipe2],[data-restore],[data-restore2],[data-flip2],[data-end],[data-reset],[data-checkout],[data-boards],[data-setboards],[data-pull],[data-cosave],[data-coname],[data-costep],[data-coclear],[data-format],[data-share],[data-scope],[data-copycode],[data-paste],[data-imp],[data-setscore],[data-setbo],[data-close],[data-tie],[data-tiecancel],[data-dec],[data-league],[data-back],[data-month],[data-addweek],[data-editweek],[data-eadd],[data-erm],[data-esave],[data-edel],[data-eclose],[data-reg],[data-lastorder],[data-crown],[data-crownwin],[data-crownshare],[data-uncrown]');
   if(!t)return;
   var d=t.dataset;
 
@@ -1334,16 +2196,70 @@ document.addEventListener('click',function(e){
   if(d.end){return endNight();}
   if(d.checkout){return openCheckout();}
   if(d.boards){return openBoards();}
-  if(d.setboards){S.cfg.boards=parseInt(d.setboards,10);return openBoards();}
-  if(d.cosave){
-    S.checkout={name:(document.getElementById('coName').value||'').trim(),score:parseInt(document.getElementById('coScore').value,10)||0};
-    return closeModal();
+  if(d.setboards){S.cfg.boards=parseInt(d.setboards,10);reboard();return openBoards();}
+  if(d.pull){undo(parseInt(d.pull,10));return openBoards();}
+  if(d.coname){S.co.name=(key(S.co.name)===key(d.coname))?'':d.coname;if(S.co.name&&!S.co.score)S.co.score=coBest(S.co.name)||2;return drawCheckout();}
+  if(d.costep){return coStep(parseInt(d.costep,10));}
+  if(d.cosave){return coSave();}
+  if(d.coclear){
+    var ck=key(d.coclear);
+    S.checkouts=S.checkouts.filter(function(x){return key(x.n)!==ck;});
+    var t2=coTop();S.checkout=t2?{name:t2.n,score:t2.s}:{name:'',score:0};
+    S.co.score=0;return drawCheckout();
   }
+  if(d.share){return openShare();}
+  if(d.scope){S.share.scope=d.scope;S.share.code=null;S.share.err=null;drawShare();return buildShare();}
+  if(d.copycode){
+    var cc=S.share&&S.share.code?(S.share.url||S.share.code):'';
+    if(cc&&navigator.clipboard)navigator.clipboard.writeText(cc).then(function(){
+      var el2=document.getElementById('copyNote');if(el2)el2.textContent='copied';});
+    return;
+  }
+  if(d.paste){
+    var pv=document.getElementById('pasteIn');
+    var raw2=pv?pv.value:'';
+    if(!raw2.trim())return;
+    decodePayload(raw2).then(function(data){openImport(data,false);})
+      .catch(function(err){
+        setModal('<div class="scrim"><div class="modal"><h2>Couldn\u2019t read that</h2><p>'+
+          esc(err.message||'The code was not readable.')+'</p>'+
+          '<div class="modalrow"><button class="btn" data-share="1">Back</button></div></div></div>');
+      });
+    return;
+  }
+  if(d.imp){return doImport(d.imp);}
+  if(d.format){return openFormat();}
+  if(d.setscore){S.cfg.score=parseInt(d.setscore,10);return openFormat();}
+  if(d.setbo){applyBestOf(parseInt(d.setbo,10));return openFormat();}
   if(d.tie){return pickTie(parseInt(d.tie,10));}
   if(d.tiecancel){tiePending=null;S.pendingEnd=false;return closeModal();}
   if(d.close){return closeModal();}
   if(d.reset){return askNewNight();}
   if(d.newnight2){return newNight();}
+  if(d.restore){
+    var bi=backupInfo();
+    if(!bi)return;
+    return setModal('<div class="scrim"><div class="modal"><h2>Restore the backup?</h2>'+
+      '<p>This puts back the save from '+esc(bi.v)+', exactly as it was before this version first opened on '+esc(bi.at)+'. '+
+      'Anything you have done since will be replaced.</p>'+
+      '<div class="modalrow"><button class="btn" data-restore2="1">Put it back</button>'+
+      '<button class="btn ghost" data-close="1">Cancel</button></div></div></div>');
+  }
+  if(d.restore2){
+    var bi2=backupInfo();
+    if(!bi2)return closeModal();
+    try{
+      var old4=JSON.parse(bi2.data);
+      S=Object.assign(fresh(),old4);
+      S.cfg=Object.assign(fresh().cfg,S.cfg||{});
+      S.league=Object.assign({weeks:[],crowns:[]},S.league||{});
+      if(!Array.isArray(S.checkouts))S.checkouts=[];
+      if(!S.checkouts.length&&S.checkout&&S.checkout.score>0&&S.checkout.name)
+        S.checkouts=[{n:String(S.checkout.name).toUpperCase(),s:S.checkout.score}];
+      tiePending=null;modalHTML='';
+    }catch(e5){}
+    return render();
+  }
   if(d.wipe){return askWipe();}
   if(d.wipe2){
     try{store.removeItem(KEY);}catch(err){}
@@ -1375,6 +2291,7 @@ document.addEventListener('keydown',function(e){
   if(e.key==='Enter'&&e.target.id==='nameIn'){e.preventDefault();addName();}
 });
 render();
+try{checkIncomingHash();}catch(e){}
 if(typeof globalThis!=='undefined'&&globalThis.__DARTS_TEST__){
   globalThis.__DARTS__={state:function(){return S;},set:function(v){S=v;},fresh:fresh,
     roundRobin:roundRobin,buildFixtures:buildFixtures,nextUp:nextUp,freeBoard:freeBoard,
@@ -1383,9 +2300,10 @@ if(typeof globalThis!=='undefined'&&globalThis.__DARTS_TEST__){
     assignGroups:assignGroups,splitPlan:splitPlan,record:record,render:render,
     isLastOfMonth:isLastOfMonth,isDeciderWeek:isDeciderWeek,leagueTable:leagueTable,
     leagueRow:leagueRow,orderedPeople:orderedPeople,doDraw:doDraw,nightRows:nightRows,
-    upsertWeek:upsertWeek,crownFor:crownFor,monthKey:monthKey,roster:roster,movePerson:movePerson,openAmend:openAmend,amendStep:amendStep,amendPick:amendPick,amendSave:amendSave,amendReset:amendReset,undo:undo,newNight:newNight,flipWinner:flipWinner,harvest:harvest,ordinal:ordinal,regulars:regulars,addPerson:addPerson,dropPerson:dropPerson,here:here,applyLastOrder:applyLastOrder,lastNight:lastNight};
+    upsertWeek:upsertWeek,crownFor:crownFor,monthKey:monthKey,roster:roster,movePerson:movePerson,openAmend:openAmend,amendStep:amendStep,amendPick:amendPick,amendSave:amendSave,amendReset:amendReset,undo:undo,newNight:newNight,flipWinner:flipWinner,harvest:harvest,liveGames:liveGames,applyBestOf:applyBestOf,coBest:coBest,coTop:coTop,openCheckout:openCheckout,coStep:coStep,coSave:coSave,sideHTML:sideHTML,tname:tname,tnameHTML:tnameHTML,QR:QR,packBytes:packBytes,unpackBytes:unpackBytes,encodePayload:encodePayload,decodePayload:decodePayload,mergeLeague:mergeLeague,takeNight:takeNight,qrSVG:qrSVG,stranded:stranded,reboard:reboard,ordinal:ordinal,regulars:regulars,addPerson:addPerson,dropPerson:dropPerson,here:here,applyLastOrder:applyLastOrder,lastNight:lastNight,backupInfo:backupInfo};
 }
 })();
+
 
 </script>
 </body>
