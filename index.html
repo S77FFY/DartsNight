@@ -373,7 +373,7 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 (function(){
 'use strict';
 
-var VERSION='1.11.0';
+var VERSION='1.11.1';
 var KEY='wednesday-darts-v1';
 var store=(function(){
   try{var t='__t';localStorage.setItem(t,t);localStorage.removeItem(t);return localStorage;}
@@ -1277,7 +1277,9 @@ function drawShare(){
              :'<p style="opacity:.7">This page is open from a file rather than a web address, so scanning won\u2019t open anything. Copy the text and paste it on the other device instead.</p>')+
       '<div class="modalrow"><button class="btn" data-big="1">Make it full screen</button>'+
       '<button class="btn ghost small" data-copycode="1">Copy the text code</button>'+
-      '<span class="grouptag" id="copyNote"></span></div>';
+      '<span class="grouptag" id="copyNote"></span></div>'+
+      '<div class="modalrow" style="margin-top:10px">'+
+      '<button class="btn ghost small" data-testqr="1">Scan test \u2014 tiny code, no data</button></div>';
   }
   setModal('<div class="scrim"><div class="modal">'+
     '<h2>Hand over</h2>'+
@@ -1294,6 +1296,23 @@ function drawShare(){
     '</div></div>');
 }
 
+/* A deliberately tiny code carrying nothing but the plain page address. If the camera
+   reads this but not the big one, the problem is density, not the encoder. */
+function drawTest(){
+  var url=shareURL('')||'https://example.com/';
+  url=url.replace(/#d=$/,'');
+  var res=QR.encode(url),svg=qrSVG(url);
+  setModal('<div class="scrim"><div class="modal">'+
+    '<h2>Scan test</h2>'+
+    '<p>This carries nothing but the address of this page \u2014 version '+(res?res.version:'?')+
+    ', '+(res?res.version*4+17:'?')+' modules. About as easy as a code gets.</p>'+
+    '<div class="qrwrap">'+(svg||'')+'</div>'+
+    '<p style="opacity:.7">If your camera opens this one, the encoder is fine and the bigger code just needs to be shown larger. '+
+    'If your camera ignores this one too, the problem is on the phone \u2014 check Settings \u203a Camera \u203a Scan QR Codes is on, '+
+    'or try the Code Scanner in Control Centre.</p>'+
+    '<p class="grouptag">'+esc(url)+'</p>'+
+    '<div class="modalrow"><button class="btn" data-share="1">Back</button></div></div></div>');
+}
 function drawBig(){
   var sh=S.share,text=sh.url||sh.code;
   var svg=qrSVG(text);
@@ -2114,7 +2133,7 @@ function openBoards(){
 
 /* ---------- events ---------- */
 document.addEventListener('click',function(e){
-  var t=e.target.closest('[data-cfg],[data-go],[data-add],[data-del],[data-up],[data-down],[data-person],[data-draw],[data-pick],[data-clearpairs],[data-confirmpairs],[data-grp],[data-split],[data-start],[data-redraw],[data-game],[data-side],[data-undo],[data-amend],[data-astep],[data-apick],[data-asave],[data-areset],[data-aclose],[data-estep],[data-newnight2],[data-wipe],[data-wipe2],[data-restore],[data-restore2],[data-flip2],[data-end],[data-reset],[data-checkout],[data-boards],[data-setboards],[data-pull],[data-cosave],[data-coname],[data-costep],[data-coclear],[data-format],[data-share],[data-scope],[data-copycode],[data-big],[data-closebig],[data-paste],[data-imp],[data-setscore],[data-setbo],[data-close],[data-tie],[data-tiecancel],[data-dec],[data-league],[data-back],[data-month],[data-addweek],[data-editweek],[data-eadd],[data-erm],[data-esave],[data-edel],[data-eclose],[data-reg],[data-lastorder],[data-crown],[data-crownwin],[data-crownshare],[data-uncrown]');
+  var t=e.target.closest('[data-cfg],[data-go],[data-add],[data-del],[data-up],[data-down],[data-person],[data-draw],[data-pick],[data-clearpairs],[data-confirmpairs],[data-grp],[data-split],[data-start],[data-redraw],[data-game],[data-side],[data-undo],[data-amend],[data-astep],[data-apick],[data-asave],[data-areset],[data-aclose],[data-estep],[data-newnight2],[data-wipe],[data-wipe2],[data-restore],[data-restore2],[data-flip2],[data-end],[data-reset],[data-checkout],[data-boards],[data-setboards],[data-pull],[data-cosave],[data-coname],[data-costep],[data-coclear],[data-format],[data-share],[data-scope],[data-copycode],[data-big],[data-closebig],[data-testqr],[data-paste],[data-imp],[data-setscore],[data-setbo],[data-close],[data-tie],[data-tiecancel],[data-dec],[data-league],[data-back],[data-month],[data-addweek],[data-editweek],[data-eadd],[data-erm],[data-esave],[data-edel],[data-eclose],[data-reg],[data-lastorder],[data-crown],[data-crownwin],[data-crownshare],[data-uncrown]');
   if(!t)return;
   var d=t.dataset;
 
@@ -2230,6 +2249,7 @@ document.addEventListener('click',function(e){
   if(d.share){return openShare();}
   if(d.scope){S.share.scope=d.scope;S.share.code=null;S.share.err=null;drawShare();return buildShare();}
   if(d.big){return drawBig();}
+  if(d.testqr){return drawTest();}
   if(d.closebig){return drawShare();}
   if(d.copycode){
     var cc=S.share&&S.share.code?(S.share.url||S.share.code):'';
