@@ -300,12 +300,20 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 .rack .chip.on .nm{color:var(--ink)}
 .rack .chip .tick{position:absolute;top:-5px;right:-5px;width:24px;height:24px;border-radius:50%;
   background:var(--green);color:var(--chalk);font-size:13px;line-height:24px;text-align:center;z-index:2}
-.qrwrap{display:flex;justify-content:center;padding:14px;background:#EFE7D2;border:3px solid var(--ink);border-radius:3px;margin-bottom:14px}
-.qr{width:min(300px,60vw);height:auto;image-rendering:pixelated}
+.qrwrap{display:flex;justify-content:center;padding:10px;background:#FFF;border:3px solid var(--ink);border-radius:3px;margin-bottom:14px}
+.qr{width:100%;max-width:min(560px,78vw,64vh);height:auto;display:block}
+.scrim.big{background:#FFF;padding:0;cursor:pointer}
+.bigwrap{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;background:#FFF}
+.bigwrap .qr{width:min(96vw,92vh);max-width:none}
+.bighint{font-family:var(--data);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#555;padding:10px 0 14px}
 .pastebox{flex:1 1 220px;min-width:0;border:2px solid var(--ink);background:none;color:inherit;
   padding:10px 12px;border-radius:2px;font-family:var(--data);font-size:13px}
 #copyNote{align-self:center}
-.vtag{font-family:var(--data);font-size:12px;letter-spacing:.22em;text-transform:uppercase;opacity:.45;margin:0 0 14px}
+.vtag{
+  font-family:var(--data);font-size:clamp(12px,1.1vw,15px);letter-spacing:.14em;
+  color:var(--wire);border:1px solid var(--wire);border-radius:999px;
+  padding:5px 12px;white-space:nowrap;
+}
 .ltable{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
 .ltable thead th{
   font-family:var(--data);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
@@ -365,7 +373,7 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 (function(){
 'use strict';
 
-var VERSION='1.10.1';
+var VERSION='1.11.0';
 var KEY='wednesday-darts-v1';
 var store=(function(){
   try{var t='__t';localStorage.setItem(t,t);localStorage.removeItem(t);return localStorage;}
@@ -930,10 +938,11 @@ var QR=(function(){
         else if(i===7)m[8][8]=bit;
         else if(i===8)m[7][8]=bit;
         else m[14-i][8]=bit;
-        // the split copy
-        if(i<8)m[size-1-i][8]=bit;
+        // the split copy: seven bits up the left column, eight along the bottom-right row
+        if(i<7)m[size-1-i][8]=bit;
         else m[8][size-15+i]=bit;
       }
+      m[size-8][8]=1;      // the dark module, restored after the format bits are written
       if(v>=7){
         var vb=versionBits(v);
         for(i=0;i<18;i++){
@@ -1216,16 +1225,18 @@ function takeNight(n){
 }
 
 /* --- QR as SVG --- */
-function qrSVG(text,px){
+/* Pure black on pure white with a full four-module quiet zone: the widest contrast a
+   camera can get. Anything tinted costs scan reliability for no benefit. */
+function qrSVG(text){
   var res=QR.encode(text);
   if(!res)return null;
   var m=res.m,n=m.length,q=4,size=n+q*2,d='';
   for(var r=0;r<n;r++)for(var c=0;c<n;c++)
     if(m[r][c])d+='M'+(c+q)+' '+(r+q)+'h1v1h-1z';
-  return '<svg class="qr" viewBox="0 0 '+size+' '+size+'" width="'+px+'" height="'+px+'" '+
+  return '<svg class="qr" viewBox="0 0 '+size+' '+size+'" preserveAspectRatio="xMidYMid meet" '+
     'shape-rendering="crispEdges" role="img" aria-label="Handover code">'+
-    '<rect width="'+size+'" height="'+size+'" fill="#EFE7D2"/>'+
-    '<path d="'+d+'" fill="#0B0C08"/></svg>';
+    '<rect width="'+size+'" height="'+size+'" fill="#FFFFFF"/>'+
+    '<path d="'+d+'" fill="#000000"/></svg>';
 }
 function shareURL(code){
   var base=location.origin+location.pathname;
@@ -1256,7 +1267,7 @@ function drawShare(){
     body='<p style="opacity:.6">Building the code…</p>';
   }else{
     var text=sh.url||sh.code;
-    var svg=sh.ver?qrSVG(text,320):null;
+    var svg=sh.ver?qrSVG(text):null;
     var busy=sh.ver>=26;
     body=(svg?'<div class="qrwrap">'+svg+'</div>':'')+
       (sh.err?'<p style="color:#B92A20">'+esc(sh.err)+'</p>':'')+
@@ -1264,7 +1275,8 @@ function drawShare(){
         (busy?' — that\u2019s a dense one. Hold the other phone close, or send a smaller slice.':' — hold the other phone about a hand\u2019s width away.')+'</p>':'')+
       (sh.url?'<p style="opacity:.7">Scan it with the other phone\u2019s camera. It opens this app with the data ready to bring in.</p>'
              :'<p style="opacity:.7">This page is open from a file rather than a web address, so scanning won\u2019t open anything. Copy the text and paste it on the other device instead.</p>')+
-      '<div class="modalrow"><button class="btn ghost small" data-copycode="1">Copy the text code</button>'+
+      '<div class="modalrow"><button class="btn" data-big="1">Make it full screen</button>'+
+      '<button class="btn ghost small" data-copycode="1">Copy the text code</button>'+
       '<span class="grouptag" id="copyNote"></span></div>';
   }
   setModal('<div class="scrim"><div class="modal">'+
@@ -1280,6 +1292,14 @@ function drawShare(){
     '<button class="btn" data-paste="1">Import</button></div>'+
     '<div class="modalrow" style="margin-top:18px"><button class="btn ghost" data-close="1">Done</button></div>'+
     '</div></div>');
+}
+
+function drawBig(){
+  var sh=S.share,text=sh.url||sh.code;
+  var svg=qrSVG(text);
+  setModal('<div class="scrim big" data-closebig="1">'+
+    '<div class="bigwrap">'+(svg||'')+
+    '<div class="bighint">'+(sh.ver*4+17)+' modules \u00b7 tap anywhere to close</div></div></div>');
 }
 
 /* --- the import sheet --- */
@@ -1363,10 +1383,10 @@ function viewSetup(){
   var auto=isLastOfMonth(S.cfg.date),dec=isDeciderWeek();
   return '<div class="topbar"><div class="brand">Wednesday <b>Darts</b></div>'+
     '<div class="meta"><span class="pill">Set up the night</span>'+
-    '<button class="btn ghost small" data-league="1">League</button></div></div>'+
+    '<button class="btn ghost small" data-league="1">League</button>'+
+    '<span class="vtag">v'+VERSION+'</span></div></div>'+
     '<div class="panel cream"><div class="sect">'+
     '<h1 class="big">Chalk it up</h1>'+
-    '<div class="vtag">v'+VERSION+'</div>'+
     '<p class="sub">Set the format before anyone throws. You can still change boards later if one frees up.</p>'+
     '<div class="eyebrow">Date</div>'+
     '<div class="modalrow"><span class="field"><label>Playing on</label>'+
@@ -2094,7 +2114,7 @@ function openBoards(){
 
 /* ---------- events ---------- */
 document.addEventListener('click',function(e){
-  var t=e.target.closest('[data-cfg],[data-go],[data-add],[data-del],[data-up],[data-down],[data-person],[data-draw],[data-pick],[data-clearpairs],[data-confirmpairs],[data-grp],[data-split],[data-start],[data-redraw],[data-game],[data-side],[data-undo],[data-amend],[data-astep],[data-apick],[data-asave],[data-areset],[data-aclose],[data-estep],[data-newnight2],[data-wipe],[data-wipe2],[data-restore],[data-restore2],[data-flip2],[data-end],[data-reset],[data-checkout],[data-boards],[data-setboards],[data-pull],[data-cosave],[data-coname],[data-costep],[data-coclear],[data-format],[data-share],[data-scope],[data-copycode],[data-paste],[data-imp],[data-setscore],[data-setbo],[data-close],[data-tie],[data-tiecancel],[data-dec],[data-league],[data-back],[data-month],[data-addweek],[data-editweek],[data-eadd],[data-erm],[data-esave],[data-edel],[data-eclose],[data-reg],[data-lastorder],[data-crown],[data-crownwin],[data-crownshare],[data-uncrown]');
+  var t=e.target.closest('[data-cfg],[data-go],[data-add],[data-del],[data-up],[data-down],[data-person],[data-draw],[data-pick],[data-clearpairs],[data-confirmpairs],[data-grp],[data-split],[data-start],[data-redraw],[data-game],[data-side],[data-undo],[data-amend],[data-astep],[data-apick],[data-asave],[data-areset],[data-aclose],[data-estep],[data-newnight2],[data-wipe],[data-wipe2],[data-restore],[data-restore2],[data-flip2],[data-end],[data-reset],[data-checkout],[data-boards],[data-setboards],[data-pull],[data-cosave],[data-coname],[data-costep],[data-coclear],[data-format],[data-share],[data-scope],[data-copycode],[data-big],[data-closebig],[data-paste],[data-imp],[data-setscore],[data-setbo],[data-close],[data-tie],[data-tiecancel],[data-dec],[data-league],[data-back],[data-month],[data-addweek],[data-editweek],[data-eadd],[data-erm],[data-esave],[data-edel],[data-eclose],[data-reg],[data-lastorder],[data-crown],[data-crownwin],[data-crownshare],[data-uncrown]');
   if(!t)return;
   var d=t.dataset;
 
@@ -2209,6 +2229,8 @@ document.addEventListener('click',function(e){
   }
   if(d.share){return openShare();}
   if(d.scope){S.share.scope=d.scope;S.share.code=null;S.share.err=null;drawShare();return buildShare();}
+  if(d.big){return drawBig();}
+  if(d.closebig){return drawShare();}
   if(d.copycode){
     var cc=S.share&&S.share.code?(S.share.url||S.share.code):'';
     if(cc&&navigator.clipboard)navigator.clipboard.writeText(cc).then(function(){
