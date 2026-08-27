@@ -340,10 +340,15 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 .ltable tr.lead td{background:rgba(201,153,43,.22)}
 .ltable tr.lead .c-pos{opacity:.8}
 .crownmark{color:var(--wire);font-size:.7em;margin-left:8px;vertical-align:.15em}
-.chev{font-size:clamp(20px,2vw,26px);line-height:1;padding:4px 16px !important;font-weight:400}
 .monthnav{display:flex;align-items:center;gap:10px;margin:14px 0 4px;flex-wrap:wrap}
-.monthnav .btn.ghost{border-color:var(--ink);color:var(--ink);padding:6px 14px}
-.monthnav .btn.ghost:hover{background:var(--ink);color:var(--chalk)}
+.chev{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:52px;height:52px;flex:0 0 auto;padding:0;
+  border:3px solid var(--ink);border-radius:2px;background:none;color:var(--ink);
+}
+.chev svg{display:block;width:30px;height:30px}
+.chev:hover{background:var(--ink);color:var(--chalk)}
+.chev:active{transform:translateY(1px)}
 .mlabel{font-family:var(--display);text-transform:uppercase;letter-spacing:.05em;font-size:clamp(22px,2.4vw,32px);min-width:6.5em}
 .weekcard{border:2px solid rgba(11,12,8,.2);border-radius:2px;padding:10px 12px;margin-bottom:9px;background:rgba(11,12,8,.03)}
 .weekhead{display:flex;align-items:center;gap:10px;margin-bottom:7px}
@@ -363,6 +368,140 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 .erow .btn:hover{background:var(--red);border-color:var(--red);color:var(--chalk)}
 .field input[disabled]{opacity:.55}
 .plc .rec .btn{border-color:var(--ink);color:var(--ink);padding:4px 10px}
+
+/* ---------- trophy room ---------- */
+.troom{
+  position:relative;flex:1 1 auto;min-height:0;overflow-y:auto;
+  background:
+    radial-gradient(ellipse 70% 45% at 50% 12%, #3A2E1A 0%, transparent 70%),
+    linear-gradient(#171208 0%, #241B0D 46%, #120E06 100%);
+  display:flex;flex-direction:column;align-items:center;
+}
+/* shelves of silhouetted silverware receding into the dark */
+.tshelves{
+  position:absolute;inset:0 0 32% 0;pointer-events:none;opacity:.5;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 44px, rgba(201,153,43,.14) 44px 47px, transparent 47px 92px),
+    repeating-linear-gradient(180deg, transparent 0 96px, rgba(201,153,43,.22) 96px 100px, transparent 100px 200px);
+  -webkit-mask:linear-gradient(180deg,#000 0 55%,transparent 92%);
+  mask:linear-gradient(180deg,#000 0 55%,transparent 92%);
+}
+.tglow{
+  position:absolute;left:50%;top:-6%;width:150%;height:80%;transform:translateX(-50%);
+  background:conic-gradient(from 180deg at 50% 0%, transparent 0deg, rgba(255,224,150,.16) 22deg, transparent 44deg);
+  pointer-events:none;
+}
+.tfloor{
+  position:absolute;left:0;right:0;bottom:0;height:34%;pointer-events:none;
+  background:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.9));
+}
+.tbar{
+  position:relative;z-index:3;display:flex;align-items:center;gap:14px;
+  padding:14px clamp(12px,2vw,28px);width:100%;
+}
+.chev.light{border-color:rgba(255,224,150,.7);color:#FFE9A8}
+.chev.light:hover{background:rgba(255,224,150,.16);color:#FFF3CE}
+.chev.light:disabled{opacity:.25;cursor:not-allowed}
+.chev.light:disabled:hover{background:none}
+.tyear{
+  font-family:var(--display);font-size:clamp(34px,5vw,60px);line-height:1;letter-spacing:.06em;
+  color:#FFE9A8;text-shadow:0 0 24px rgba(255,205,90,.55);
+}
+.tclose{margin-left:auto;border-color:rgba(255,224,150,.6);color:#FFE9A8}
+.tclose:hover{background:#FFE9A8;color:#1A1305}
+.tstage{
+  position:relative;z-index:2;width:min(340px,68vw);aspect-ratio:3/4;flex:0 0 auto;
+  perspective:1100px;
+}
+.tspin{
+  width:100%;height:100%;transform-style:preserve-3d;
+  animation:tspin 13s linear infinite;
+}
+@keyframes tspin{from{transform:rotateY(0deg)}to{transform:rotateY(360deg)}}
+.trophysvg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 22px rgba(255,196,63,.45))}
+.spark{
+  position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;pointer-events:none;
+  background:
+    linear-gradient(#fff,#fff) center/2px 100% no-repeat,
+    linear-gradient(#fff,#fff) center/100% 2px no-repeat;
+  -webkit-mask:radial-gradient(circle,#000 0 12%,rgba(0,0,0,.35) 45%,transparent 70%);
+  mask:radial-gradient(circle,#000 0 12%,rgba(0,0,0,.35) 45%,transparent 70%);
+  opacity:0;animation:twinkle 3.4s ease-in-out infinite;
+}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.3) rotate(0deg)}
+  45%{opacity:0;transform:scale(.3) rotate(30deg)}
+  60%{opacity:1;transform:scale(1.15) rotate(60deg)}
+  75%{opacity:0;transform:scale(.4) rotate(90deg)}}
+.tplate{
+  position:relative;z-index:3;text-align:center;margin:4px 0 16px;padding:0 16px;
+}
+.tplate .tname{
+  display:block;font-family:var(--display);text-transform:uppercase;letter-spacing:.05em;
+  font-size:clamp(30px,4.6vw,58px);line-height:1;
+  background:linear-gradient(180deg,#FFF6D2 0%,#F0C64B 45%,#9C6D10 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 2px 18px rgba(255,190,60,.35);
+}
+.tplate .tname.dim{background:none;color:rgba(255,233,168,.4);-webkit-text-fill-color:currentColor}
+.tplate .tsub{
+  display:block;font-family:var(--data);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(255,233,168,.65);margin-top:8px;
+}
+/* The base of the trophy: a bronze plinth carrying an engraved brass plate. */
+.plinth{
+  position:relative;z-index:3;width:100%;max-width:860px;margin:0 auto 30px;
+  padding:0 clamp(10px,2vw,20px);
+}
+.plinth-top{
+  height:16px;margin:0 clamp(4px,1.5vw,18px);border-radius:4px 4px 0 0;
+  background:linear-gradient(180deg,#F3D680 0%,#B4820F 55%,#6E4A08 100%);
+  box-shadow:0 2px 6px rgba(0,0,0,.55);
+}
+.mgrid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:2px;
+  padding:12px;border-radius:0 0 5px 5px;
+  background:linear-gradient(180deg,#4A360F 0%,#2E2108 100%);
+  box-shadow:inset 0 2px 0 rgba(255,226,150,.35), inset 0 -3px 10px rgba(0,0,0,.7), 0 10px 26px rgba(0,0,0,.6);
+  border:2px solid rgba(255,214,128,.35);border-top:none;
+}
+.mcell{
+  position:relative;text-align:left;padding:9px 10px;min-height:66px;
+  display:flex;flex-direction:column;gap:3px;cursor:pointer;
+  background:linear-gradient(180deg, rgba(255,226,150,.07), rgba(0,0,0,.18));
+  border:1px solid rgba(255,214,128,.16);border-radius:2px;
+}
+.mcell:hover{background:linear-gradient(180deg, rgba(255,226,150,.16), rgba(0,0,0,.12));
+  border-color:rgba(255,214,128,.45)}
+.mcell .mname{font-family:var(--data);font-size:9px;letter-spacing:.2em;color:rgba(255,222,150,.5)}
+/* engraved lettering: a dark cut with a bright edge catching the light above it */
+.mcell .mwin{
+  font-family:var(--display);text-transform:uppercase;font-size:clamp(15px,1.8vw,21px);line-height:1.05;
+  color:#C79A2A;overflow-wrap:anywhere;
+  text-shadow:0 1px 0 rgba(255,240,190,.5), 0 -1px 0 rgba(0,0,0,.75);
+}
+.mcell.won .mwin{color:#FFDF95;text-shadow:0 1px 0 rgba(255,250,220,.75), 0 -1px 1px rgba(60,32,0,.9)}
+.mcell.won{background:linear-gradient(180deg, rgba(255,214,128,.2), rgba(120,80,10,.15));
+  border-color:rgba(255,214,128,.5)}
+.mcell.pending .mwin{color:rgba(255,222,150,.55)}
+.mcell:not(.won):not(.pending) .mwin{color:rgba(255,222,150,.22)}
+.mcell .mshared{font-family:var(--data);font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,233,168,.45)}
+.mcell.fresh{
+  border-color:#FFDF95;
+  animation:freshcut 2.6s ease-out 3;
+}
+@keyframes freshcut{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,223,149,0)}
+  35%{box-shadow:0 0 0 3px rgba(255,223,149,.55), 0 0 22px rgba(255,205,90,.5)}
+}
+.plinth-note{
+  text-align:center;font-family:var(--data);font-size:9px;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(255,233,168,.35);padding:10px 0 0;
+}
+.pick.chosen{background:var(--ink);color:var(--chalk)}
+.pick.chosen .tnum{background:var(--wire);color:var(--ink)}
+@media (max-width:520px){.mgrid{grid-template-columns:repeat(2,1fr)}}
+@media (prefers-reduced-motion:reduce){.tspin{animation:none}.spark{display:none}}
+
 @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 @media (max-width:640px){
   .chip{width:98px;height:98px}
@@ -379,7 +518,7 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 (function(){
 'use strict';
 
-var VERSION='1.16.1';
+var VERSION='1.19.0';
 var KEY='wednesday-darts-v1';
 var store=(function(){
   try{var t='__t';localStorage.setItem(t,t);localStorage.removeItem(t);return localStorage;}
@@ -402,6 +541,7 @@ function fresh(){
     co:null,
     share:null,
     imp:null,
+    medit:null,
     manualRank:{},        // teamNum -> rank within tie cluster
     finished:false,
     appVersion:'',
@@ -1045,6 +1185,7 @@ function render(){
   else if(S.phase==='entry')h=viewEntry();
   else if(S.phase==='draw')h=viewDraw();
   else if(S.phase==='league')h=viewLeague();
+  else if(S.phase==='trophy')h=viewTrophy();
   else h=viewPlay();
   app.innerHTML=h+(modalHTML||'');
   save();
@@ -1241,6 +1382,15 @@ function doDraw(){
   assignGroups();
 }
 
+/* A chunky arrow that reads clearly at a glance, drawn rather than typed so it sits
+   dead centre in its button whatever the font does. */
+function arrowSVG(dir){
+  var d=dir<0?'M22 5 L9 16 L22 27 M27 16 H9':'M10 5 L23 16 L10 27 M5 16 H23';
+  return '<svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true" focusable="false">'+
+    '<path d="'+d+'" fill="none" stroke="currentColor" stroke-width="5.5" '+
+    'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+
 /* ---------- league ---------- */
 var lgMonth=null;
 function viewLeague(){
@@ -1281,14 +1431,16 @@ function viewLeague(){
 
   return '<div class="topbar"><div class="brand">Wednesday <b>Darts</b></div>'+
     '<div class="meta"><span class="pill">League</span>'+
+    '<button class="btn small" data-trophy="1">\u2605 Trophy room</button>'+
     '<button class="btn ghost small" data-share="1">Hand over</button>'+
     '<button class="btn ghost small" data-back="1">Back</button></div></div>'+
     '<div class="panel cream"><div class="sect wide">'+
     '<h1 class="big">The league</h1>'+
-    '<div class="monthnav"><button class="btn ghost small chev" data-month="-1" aria-label="Previous month">\u2190</button>'+
+    '<div class="monthnav"><button class="chev" data-month="-1" aria-label="Previous month">'+arrowSVG(-1)+'</button>'+
       '<span class="mlabel">'+monthLabel(mk)+'</span>'+
-      '<button class="btn ghost small chev" data-month="1" aria-label="Next month">\u2192</button>'+
-      '<button class="btn small" data-addweek="1">Add a week</button></div>'+
+      '<button class="chev" data-month="1" aria-label="Next month">'+arrowSVG(1)+'</button>'+
+      '<button class="btn small" data-addweek="1">Add a week</button>'+
+      '<button class="btn small" data-trophy="1">\u2605 Trophy room</button></div>'+
     (cr?'<div class="plc gold" style="margin:16px 0"><span class="rank">★</span><span><span class="who">'+esc(cr.names.join(' & '))+'</span>'+
         '<div class="grouptag">Crowned for '+monthLabel(mk)+(cr.shared?' · shared':'')+'</div></span>'+
         '<span class="rec"><button class="btn ghost small" data-uncrown="'+mk+'">Undo</button></span></div>':'')+
@@ -1296,7 +1448,11 @@ function viewLeague(){
     (tbl.length&&!cr?'<div style="margin-top:18px"><button class="btn" data-crown="'+mk+'">'+
       (tied.length>1?'Settle the crown ('+tied.length+' level)':'Crown '+esc(tbl[0].n))+'</button></div>':'')+
     '<div class="eyebrow">Weeks</div>'+wk+
-    (trophy?'<div class="eyebrow">Trophy cabinet</div><div class="teamlist">'+trophy+'</div>':'')+
+    '<div class="eyebrow">Trophy cabinet</div>'+
+    (trophy?'<div class="teamlist">'+trophy+'</div>'
+           :'<p class="sub" style="opacity:.5">No months crowned yet.</p>')+
+    '<div class="modalrow" style="margin-top:12px"><button class="btn" data-trophy="1">\u2605 Open the trophy room</button>'+
+    '<span class="grouptag" style="align-self:center">See the trophy and engrave any month</span></div>'+
     '<div class="eyebrow">Danger</div>'+
     (function(){
       var b=backupInfo();
@@ -1343,23 +1499,228 @@ function drawEditor(){
     '<button class="btn ghost" data-eclose="1">Cancel</button></div>'+
     '</div></div>');
 }
+function askDeleteWeek(d){
+  var w=null;
+  S.league.weeks.forEach(function(x){if(x.d===d)w=x;});
+  var n=w?w.rows.length:0;
+  setModal('<div class="scrim"><div class="modal">'+
+    '<h2>Delete this week?</h2>'+
+    '<p>'+esc(dayLabel(d))+' will be removed from the '+monthLabel(monthKey(d))+' league, along with '+
+    n+' player'+(n===1?'\u2019s':'s\u2019')+' wins. Nothing else is affected.</p>'+
+    '<div class="modalrow"><button class="btn" data-edel2="'+esc(d)+'" style="background:#B92A20;border-color:#B92A20;color:#EFE7D2">Delete it</button>'+
+    '<button class="btn ghost" data-eback="1">Keep it</button></div></div></div>');
+}
+/* Crowning rules: one winner, or two who agree to share. Three or more level have to
+   throw a play-off first — the app won't split a three-way crown for them. */
+function setCrown(mk,names,wins){
+  names=names.filter(function(n){return String(n||'').trim();})
+             .map(function(n){return String(n).trim().toUpperCase();}).slice(0,2);
+  S.league.crowns=S.league.crowns.filter(function(c){return c.m!==mk;});
+  if(!names.length)return;
+  var w=wins;
+  if(w==null){
+    var t=leagueTable(mk),k=key(names[0]),hit=null;
+    t.forEach(function(r){if(key(r.n)===k)hit=r;});
+    w=hit?hit.w:0;
+  }
+  S.league.crowns.push({m:mk,names:names,w:w,shared:names.length>1});
+  S.league.crowns.sort(function(x,y){return x.m<y.m?-1:1;});
+}
+var crownPick=null;
 function openCrown(mk){
   var tbl=leagueTable(mk);
   if(!tbl.length)return;
   var top=tbl[0].w,tied=tbl.filter(function(r){return r.w===top;});
-  if(tied.length===1){
-    S.league.crowns.push({m:mk,names:[tied[0].n],w:top,shared:false});
-    return render();
-  }
+  if(tied.length===1){setCrown(mk,[tied[0].n],top);return showTrophy(mk);}
+  crownPick={m:mk,tied:tied.map(function(r){return r.n;}),w:top,sel:[]};
+  drawCrown();
+}
+function drawCrown(){
+  var c=crownPick,many=c.tied.length>2;
+  var note=many
+    ? '<b>'+c.tied.length+' are level on '+c.w+' wins.</b> Three or more can\u2019t share the month, so throw a play-off and tap whoever comes out on top. If the play-off leaves two level, tap them both.'
+    : 'Both finished '+monthLabel(c.m)+' on '+c.w+' wins. Tap one to crown them, or tap both to share the month.';
   setModal('<div class="scrim"><div class="modal">'+
-    '<h2>Level at the top</h2>'+
-    '<p>'+tied.map(function(r){return esc(r.n);}).join(', ')+' finished '+monthLabel(mk)+' on '+top+
-    ' wins. Share it, or throw a play-off and tap the winner.</p>'+
-    '<div class="picklist">'+tied.map(function(r){
-      return '<button class="pick" data-crownwin="'+esc(r.n)+'" data-cm="'+mk+'"><span class="tnum">★</span>'+
-        '<span class="tnames">'+esc(r.n)+'</span></button>';}).join('')+'</div>'+
-    '<div class="modalrow"><button class="btn" data-crownshare="'+mk+'">Share the crown</button>'+
-    '<button class="btn ghost" data-close="1">Not yet</button></div></div></div>');
+    '<h2>'+(many?'Play-off needed':'Level at the top')+'</h2>'+
+    '<p>'+note+'</p>'+
+    '<div class="picklist">'+c.tied.map(function(n){
+      var on=c.sel.indexOf(n)>=0;
+      return '<button class="pick'+(on?' chosen':'')+'" data-crownsel="'+esc(n)+'">'+
+        '<span class="tnum">'+(on?'\u2605':'\u2606')+'</span><span class="tnames">'+esc(n)+'</span></button>';
+    }).join('')+'</div>'+
+    '<p class="grouptag">'+(c.sel.length===0?'Nobody picked yet'
+      :(c.sel.length===1?esc(c.sel[0])+' takes it':esc(c.sel.join(' & '))+' share it \u2014 the most that can'))+'</p>'+
+    '<div class="modalrow" style="margin-top:14px"><button class="btn" data-crownsave="1" '+(c.sel.length?'':'disabled')+'>'+
+      (c.sel.length>1?'Crown them both':'Crown them')+'</button>'+
+    '<button class="btn ghost" data-crowncancel="1">Not yet</button></div></div></div>');
+}
+
+/* Retrospective entry: set a month's winners by hand, whether or not any weeks were logged. */
+function openMonthEdit(mk){
+  var c=crownFor(mk),n=c?c.names:[];
+  S.medit={m:mk,a:n[0]||'',b:n[1]||''};
+  drawMonthEdit();
+}
+function drawMonthEdit(){
+  var e=S.medit,c=crownFor(e.m);
+  setModal('<div class="scrim"><div class="modal">'+
+    '<h2>'+esc(monthLabel(e.m))+'</h2>'+
+    '<p>Whose name goes on the trophy for this month? Leave the second blank unless two shared it \u2014 three or more can\u2019t, they play it off.</p>'+
+    '<div class="editrows">'+
+      '<div class="erow"><input data-mname="a" list="rosterList3" placeholder="Winner" value="'+esc(e.a)+'" maxlength="14" autocomplete="off"></div>'+
+      '<div class="erow"><input data-mname="b" list="rosterList3" placeholder="Shared with (optional)" value="'+esc(e.b)+'" maxlength="14" autocomplete="off"></div>'+
+    '</div>'+
+    '<datalist id="rosterList3">'+roster().map(function(n){return '<option value="'+esc(n)+'">';}).join('')+'</datalist>'+
+    '<div class="modalrow" style="margin-top:18px"><button class="btn" data-msave="1">Engrave it</button>'+
+    (c?'<button class="btn ghost" data-mclear="'+esc(e.m)+'">Clear this month</button>':'')+
+    '<button class="btn ghost" data-mclose="1">Cancel</button></div></div></div>');
+}
+function harvestMonth(){
+  if(!S.medit)return;
+  var a=document.querySelector('[data-mname="a"]'),b=document.querySelector('[data-mname="b"]');
+  if(a)S.medit.a=a.value;
+  if(b)S.medit.b=b.value;
+}
+
+/* ---------- the trophy room ---------- */
+var lgYear=null;
+function crownYears(){
+  var y={};
+  S.league.crowns.forEach(function(c){y[c.m.slice(0,4)]=1;});
+  S.league.weeks.forEach(function(w){y[w.d.slice(0,4)]=1;});
+  var out=Object.keys(y).sort();
+  if(!out.length)out=[String(new Date().getFullYear())];
+  return out;
+}
+/* Whoever took the most months that year has their name on the annual trophy.
+   A dead heat is shared rather than broken arbitrarily. */
+function yearChampions(year){
+  var tally={},names={};
+  S.league.crowns.forEach(function(c){
+    if(c.m.slice(0,4)!==year)return;
+    c.names.forEach(function(n){
+      var k=key(n);tally[k]=(tally[k]||0)+1;names[k]=n;
+    });
+  });
+  var ks=Object.keys(tally);
+  if(!ks.length)return {names:[],count:0};
+  var top=0;ks.forEach(function(k){if(tally[k]>top)top=tally[k];});
+  return {names:ks.filter(function(k){return tally[k]===top;}).map(function(k){return names[k];}),count:top};
+}
+function monthWinner(year,m){
+  var mk=year+'-'+pad(m),c=crownFor(mk);
+  if(c)return {names:c.names,shared:c.shared,crowned:true};
+  var t=leagueTable(mk);
+  if(!t.length)return null;
+  var top=t[0].w;
+  if(!top)return null;
+  return {names:t.filter(function(r){return r.w===top;}).map(function(r){return r.n;}),shared:false,crowned:false};
+}
+function trophySVG(){
+  return '<svg class="trophysvg" viewBox="0 0 300 400" aria-hidden="true">'+
+  '<defs>'+
+    '<linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">'+
+      '<stop offset="0%" stop-color="#6E4A0B"/><stop offset="18%" stop-color="#C8971F"/>'+
+      '<stop offset="34%" stop-color="#FFF0AE"/><stop offset="46%" stop-color="#F2CB4E"/>'+
+      '<stop offset="60%" stop-color="#A97613"/><stop offset="76%" stop-color="#F6DC7E"/>'+
+      '<stop offset="92%" stop-color="#8A5F0C"/><stop offset="100%" stop-color="#5C3D08"/>'+
+    '</linearGradient>'+
+    '<linearGradient id="goldv" x1="0" y1="0" x2="0" y2="1">'+
+      '<stop offset="0%" stop-color="#FFF6CF" stop-opacity=".85"/>'+
+      '<stop offset="45%" stop-color="#FFFFFF" stop-opacity="0"/>'+
+      '<stop offset="100%" stop-color="#3B2705" stop-opacity=".55"/>'+
+    '</linearGradient>'+
+    '<linearGradient id="sheen" x1="0" y1="0" x2="1" y2="0">'+
+      '<stop offset="0%" stop-color="#fff" stop-opacity="0"/>'+
+      '<stop offset="48%" stop-color="#fff" stop-opacity=".92"/>'+
+      '<stop offset="52%" stop-color="#fff" stop-opacity=".92"/>'+
+      '<stop offset="100%" stop-color="#fff" stop-opacity="0"/>'+
+      '<animateTransform attributeName="gradientTransform" type="translate" '+
+        'values="-1 0;1 0;-1 0" dur="4.5s" repeatCount="indefinite"/>'+
+    '</linearGradient>'+
+    '<radialGradient id="glow" cx="50%" cy="42%" r="55%">'+
+      '<stop offset="0%" stop-color="#FFE9A8" stop-opacity=".55"/>'+
+      '<stop offset="100%" stop-color="#FFE9A8" stop-opacity="0"/>'+
+    '</radialGradient>'+
+    '<clipPath id="cupclip"><path d="M78 60 H222 V118 C222 176 196 214 150 224 C104 214 78 176 78 118 Z"/></clipPath>'+
+  '</defs>'+
+  '<ellipse cx="150" cy="200" rx="140" ry="150" fill="url(#glow)"/>'+
+  /* handles */
+  '<path d="M78 78 C34 78 30 150 82 166" fill="none" stroke="url(#gold)" stroke-width="15" stroke-linecap="round"/>'+
+  '<path d="M222 78 C266 78 270 150 218 166" fill="none" stroke="url(#gold)" stroke-width="15" stroke-linecap="round"/>'+
+  /* cup */
+  '<path d="M78 60 H222 V118 C222 176 196 214 150 224 C104 214 78 176 78 118 Z" fill="url(#gold)"/>'+
+  '<path d="M78 60 H222 V118 C222 176 196 214 150 224 C104 214 78 176 78 118 Z" fill="url(#goldv)"/>'+
+  '<g clip-path="url(#cupclip)"><rect x="-150" y="55" width="600" height="175" fill="url(#sheen)" opacity=".55"/></g>'+
+  '<rect x="72" y="50" width="156" height="16" rx="6" fill="url(#gold)"/>'+
+  '<rect x="72" y="50" width="156" height="16" rx="6" fill="url(#goldv)"/>'+
+  /* stem and base */
+  '<path d="M138 224 H162 L166 262 H134 Z" fill="url(#gold)"/>'+
+  '<ellipse cx="150" cy="266" rx="42" ry="9" fill="url(#gold)"/>'+
+  '<path d="M104 268 H196 L206 300 H94 Z" fill="url(#gold)"/>'+
+  '<path d="M104 268 H196 L206 300 H94 Z" fill="url(#goldv)"/>'+
+  '<rect x="74" y="300" width="152" height="30" rx="4" fill="#2A1D06"/>'+
+  '<rect x="74" y="300" width="152" height="30" rx="4" fill="url(#goldv)" opacity=".5"/>'+
+  '<rect x="78" y="304" width="144" height="22" rx="3" fill="none" stroke="url(#gold)" stroke-width="2"/>'+
+  '<ellipse cx="150" cy="342" rx="120" ry="12" fill="#000" opacity=".45"/>'+
+  '</svg>';
+}
+function sparkles(){
+  var s='',i,pts=[[54,96],[246,120],[92,44],[214,52],[150,30],[40,190],[262,196],[120,250],[186,258]];
+  for(i=0;i<pts.length;i++){
+    s+='<span class="spark" style="left:'+(pts[i][0]/300*100)+'%;top:'+(pts[i][1]/400*100)+'%;'+
+       'animation-delay:'+(i*0.47).toFixed(2)+'s"></span>';
+  }
+  return s;
+}
+var justCrowned=null;
+function showTrophy(mk){
+  lgYear=String(mk).slice(0,4);
+  justCrowned=mk;
+  S.phase='trophy';modalHTML='';
+  render();
+}
+function viewTrophy(){
+  var years=crownYears(),y=lgYear||String(new Date().getFullYear());
+  if(years.indexOf(y)<0)y=years[years.length-1];
+  lgYear=y;
+  var champ=yearChampions(y);
+  var cells='';
+  for(var m=1;m<=12;m++){
+    var mk2=y+'-'+pad(m),w=monthWinner(y,m);
+    cells+='<button class="mcell'+(w?(w.crowned?' won':' pending'):'')+(mk2===justCrowned?' fresh':'')+'" data-mcell="'+mk2+'" '+
+      'aria-label="'+MONTHS[m-1]+' '+y+'">'+
+      '<span class="mname">'+MONTHS[m-1].slice(0,3)+'</span>'+
+      '<span class="mwin">'+(w?esc(w.names.join(' & ')):'\u2014')+'</span>'+
+      (w&&w.shared?'<span class="mshared">shared</span>':'')+
+      (w&&!w.crowned?'<span class="mshared">not crowned</span>':'')+'</button>';
+  }
+  var idx=years.indexOf(y);
+  return '<div class="troom">'+
+    '<div class="tglow"></div><div class="tshelves"></div><div class="tfloor"></div>'+
+    '<div class="tbar">'+
+      '<button class="chev light" data-year="-1" '+(idx<=0?'disabled':'')+' aria-label="Previous year">'+arrowSVG(-1)+'</button>'+
+      '<span class="tyear">'+esc(y)+'</span>'+
+      '<button class="chev light" data-year="1" '+(idx>=years.length-1?'disabled':'')+' aria-label="Next year">'+arrowSVG(1)+'</button>'+
+      '<button class="btn ghost small tclose" data-troomclose="1">Close</button>'+
+    '</div>'+
+    '<div class="tstage">'+
+      '<div class="tspin">'+trophySVG()+'</div>'+
+      sparkles()+
+    '</div>'+
+    '<div class="tplate">'+
+      (champ.names.length
+        ? '<span class="tname">'+esc(champ.names.join(' & '))+'</span>'+
+          '<span class="tsub">'+champ.count+' month'+(champ.count===1?'':'s')+' won in '+esc(y)+
+          (champ.names.length>1?' \u00b7 shared':'')+'</span>'
+        : '<span class="tname dim">Not yet won</span><span class="tsub">Crown a month to put a name on it</span>')+
+    '</div>'+
+    '<div class="plinth">'+
+      '<div class="plinth-top"></div>'+
+      '<div class="mgrid">'+cells+'</div>'+
+      '<div class="plinth-note">Tap a month to engrave it</div>'+
+    '</div>'+
+    '</div>';
 }
 
 /* ---------- play ---------- */
@@ -1815,7 +2176,7 @@ function openBoards(){
 
 /* ---------- events ---------- */
 document.addEventListener('click',function(e){
-  var t=e.target.closest('[data-cfg],[data-go],[data-add],[data-del],[data-up],[data-down],[data-person],[data-draw],[data-pick],[data-clearpairs],[data-confirmpairs],[data-grp],[data-split],[data-start],[data-redraw],[data-game],[data-side],[data-undo],[data-amend],[data-astep],[data-apick],[data-asave],[data-areset],[data-aclose],[data-estep],[data-newnight2],[data-wipe],[data-wipe2],[data-restore],[data-restore2],[data-flip2],[data-end],[data-reset],[data-checkout],[data-boards],[data-setboards],[data-pull],[data-cosave],[data-coname],[data-costep],[data-coclear],[data-format],[data-share],[data-scope],[data-copycode],[data-send],[data-showtext],[data-paste],[data-imp],[data-setscore],[data-setbo],[data-close],[data-tie],[data-tiecancel],[data-dec],[data-league],[data-back],[data-month],[data-addweek],[data-editweek],[data-eadd],[data-erm],[data-esave],[data-edel],[data-eclose],[data-reg],[data-lastorder],[data-crown],[data-crownwin],[data-crownshare],[data-uncrown]');
+  var t=e.target.closest('[data-cfg],[data-go],[data-add],[data-del],[data-up],[data-down],[data-person],[data-draw],[data-pick],[data-clearpairs],[data-confirmpairs],[data-grp],[data-split],[data-start],[data-redraw],[data-game],[data-side],[data-undo],[data-amend],[data-astep],[data-apick],[data-asave],[data-areset],[data-aclose],[data-estep],[data-newnight2],[data-wipe],[data-wipe2],[data-restore],[data-restore2],[data-flip2],[data-end],[data-reset],[data-checkout],[data-boards],[data-setboards],[data-pull],[data-cosave],[data-coname],[data-costep],[data-coclear],[data-format],[data-share],[data-scope],[data-copycode],[data-send],[data-showtext],[data-paste],[data-imp],[data-setscore],[data-setbo],[data-close],[data-tie],[data-tiecancel],[data-dec],[data-league],[data-back],[data-month],[data-addweek],[data-trophy],[data-troomclose],[data-year],[data-editweek],[data-eadd],[data-erm],[data-esave],[data-edel],[data-edel2],[data-eback],[data-eclose],[data-reg],[data-lastorder],[data-crown],[data-crownsel],[data-crownsave],[data-crowncancel],[data-mcell],[data-msave],[data-mclear],[data-mclose],[data-uncrown]');
   if(!t)return;
   var d=t.dataset;
 
@@ -1823,6 +2184,13 @@ document.addEventListener('click',function(e){
   if(d.league){if(S.phase!=='league'){S.prevPhase=S.phase;lgMonth=monthKey(S.cfg.date);S.phase='league';}modalHTML='';return render();}
   if(d.back){S.phase=S.prevPhase||'setup';return render();}
   if(d.month){lgMonth=shiftMonth(lgMonth||monthKey(S.cfg.date),parseInt(d.month,10));return render();}
+  if(d.trophy){S.phase='trophy';lgYear=(lgMonth||monthKey(S.cfg.date)).slice(0,4);modalHTML='';return render();}
+  if(d.troomclose){justCrowned=null;S.phase='league';return render();}
+  if(d.year){
+    var ys=crownYears(),i2=ys.indexOf(lgYear)+parseInt(d.year,10);
+    if(i2>=0&&i2<ys.length)lgYear=ys[i2];
+    return render();
+  }
   if(d.addweek){return openWeekEditor(null);}
   if(d.editweek){return openWeekEditor(d.editweek);}
   if(d.eadd){harvest();S.edit.rows.push({n:'',w:0});return drawEditor();}
@@ -1840,24 +2208,41 @@ document.addEventListener('click',function(e){
     else upsertWeek(S.edit.d,rows);
     lgMonth=monthKey(S.edit.d);S.edit=null;return closeModal();
   }
-  if(d.edel){
-    if(confirm('Delete '+dayLabel(d.edel)+'?')){S.league.weeks=S.league.weeks.filter(function(w){return w.d!==d.edel;});S.edit=null;return closeModal();}
-    return;
+  if(d.edel){return askDeleteWeek(d.edel);}
+  if(d.edel2){
+    S.league.weeks=S.league.weeks.filter(function(w){return w.d!==d.edel2;});
+    S.edit=null;lgMonth=monthKey(d.edel2);
+    return closeModal();
   }
+  if(d.eback){return drawEditor();}
   if(d.eclose){S.edit=null;return closeModal();}
   if(d.crown){return openCrown(d.crown);}
-  if(d.crownwin){
-    var mkw=d.cm,tw=leagueTable(mkw);
-    S.league.crowns=S.league.crowns.filter(function(c){return c.m!==mkw;});
-    S.league.crowns.push({m:mkw,names:[d.crownwin],w:tw.length?tw[0].w:0,shared:false});
-    return closeModal();
+  if(d.crownsel){
+    var cs=crownPick,i3=cs.sel.indexOf(d.crownsel);
+    if(i3>=0)cs.sel.splice(i3,1);
+    else{cs.sel.push(d.crownsel);if(cs.sel.length>2)cs.sel.shift();}
+    return drawCrown();
   }
-  if(d.crownshare){
-    var mks=d.crownshare,ts=leagueTable(mks),tp=ts.length?ts[0].w:0;
-    S.league.crowns=S.league.crowns.filter(function(c){return c.m!==mks;});
-    S.league.crowns.push({m:mks,names:ts.filter(function(r){return r.w===tp;}).map(function(r){return r.n;}),w:tp,shared:true});
-    return closeModal();
+  if(d.crownsave){
+    var cm2=crownPick.m;
+    setCrown(cm2,crownPick.sel,crownPick.w);
+    crownPick=null;modalHTML='';
+    return showTrophy(cm2);
   }
+  if(d.crowncancel){crownPick=null;return closeModal();}
+  if(d.mcell){return openMonthEdit(d.mcell);}
+  if(d.msave){
+    harvestMonth();
+    var mm=S.medit.m;
+    setCrown(mm,[S.medit.a,S.medit.b],null);
+    S.medit=null;modalHTML='';
+    return showTrophy(mm);
+  }
+  if(d.mclear){
+    S.league.crowns=S.league.crowns.filter(function(c){return c.m!==d.mclear;});
+    S.medit=null;return closeModal();
+  }
+  if(d.mclose){S.medit=null;return closeModal();}
   if(d.uncrown){S.league.crowns=S.league.crowns.filter(function(c){return c.m!==d.uncrown;});return render();}
 
   if(d.cfg){S.cfg[d.cfg]=parseInt(d.val,10);return render();}
@@ -2026,7 +2411,7 @@ if(typeof globalThis!=='undefined'&&globalThis.__DARTS_TEST__){
     assignGroups:assignGroups,splitPlan:splitPlan,record:record,render:render,
     isLastOfMonth:isLastOfMonth,isDeciderWeek:isDeciderWeek,leagueTable:leagueTable,
     leagueRow:leagueRow,orderedPeople:orderedPeople,doDraw:doDraw,nightRows:nightRows,
-    upsertWeek:upsertWeek,crownFor:crownFor,monthKey:monthKey,roster:roster,movePerson:movePerson,openAmend:openAmend,amendStep:amendStep,amendPick:amendPick,amendSave:amendSave,amendReset:amendReset,undo:undo,newNight:newNight,flipWinner:flipWinner,harvest:harvest,liveGames:liveGames,applyBestOf:applyBestOf,coBest:coBest,chipName:chipName,coTop:coTop,openCheckout:openCheckout,coStep:coStep,coSave:coSave,sideHTML:sideHTML,tname:tname,tnameHTML:tnameHTML,packBytes:packBytes,unpackBytes:unpackBytes,encodePayload:encodePayload,decodePayload:decodePayload,mergeLeague:mergeLeague,shareURL:shareURL,takeNight:takeNight,stranded:stranded,reboard:reboard,ordinal:ordinal,regulars:regulars,addPerson:addPerson,dropPerson:dropPerson,here:here,applyLastOrder:applyLastOrder,lastNight:lastNight,backupInfo:backupInfo};
+    upsertWeek:upsertWeek,crownFor:crownFor,crownYears:crownYears,yearChampions:yearChampions,monthWinner:monthWinner,setCrown:setCrown,monthKey:monthKey,roster:roster,movePerson:movePerson,openAmend:openAmend,amendStep:amendStep,amendPick:amendPick,amendSave:amendSave,amendReset:amendReset,undo:undo,newNight:newNight,flipWinner:flipWinner,harvest:harvest,liveGames:liveGames,applyBestOf:applyBestOf,coBest:coBest,chipName:chipName,coTop:coTop,openCheckout:openCheckout,coStep:coStep,coSave:coSave,sideHTML:sideHTML,tname:tname,tnameHTML:tnameHTML,packBytes:packBytes,unpackBytes:unpackBytes,encodePayload:encodePayload,decodePayload:decodePayload,mergeLeague:mergeLeague,shareURL:shareURL,takeNight:takeNight,stranded:stranded,reboard:reboard,ordinal:ordinal,regulars:regulars,addPerson:addPerson,dropPerson:dropPerson,here:here,applyLastOrder:applyLastOrder,lastNight:lastNight,backupInfo:backupInfo};
 }
 })();
 
