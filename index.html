@@ -11,6 +11,8 @@
   --bed:#15160F;
   --bed-2:#1F2117;
   --wire:#C9992B;
+  --purple:#8A18E6;
+  --turq:#00C2B4;
   --green:#1E7A3A;
   --green-lit:#2A9E4B;
   --orange:#E2732A;
@@ -94,28 +96,40 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 }
 .chipgrid{display:flex;flex-wrap:wrap;gap:14px;margin-top:4px;align-items:flex-start}
 .chip{
-  position:relative;width:104px;height:104px;border-radius:50%;
-  background:var(--chalk);color:var(--ink);
+  --body:#B0ABA0;
+  position:relative;width:110px;height:110px;border-radius:50%;
+  background:var(--body);color:#fff;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   border:3px solid var(--ink);cursor:pointer;user-select:none;flex:0 0 auto;
-  box-shadow:0 3px 0 rgba(0,0,0,.35),inset 0 0 0 7px var(--chalk),inset 0 0 0 10px currentColor;
-  transition:transform .16s ease, box-shadow .16s ease;
+  box-shadow:0 3px 0 rgba(0,0,0,.4);
+  transition:transform .16s ease;
 }
+/* The rim: eight white segments alternating with eight of the chip colour, white taking
+   slightly more than half of each 45-degree step. Masked to a ring so the middle stays clear. */
 .chip::before{
-  content:"";position:absolute;inset:11px;border-radius:50%;
-  background:repeating-conic-gradient(currentColor 0 8deg, transparent 8deg 30deg);
-  opacity:.9;-webkit-mask:radial-gradient(circle,transparent 0 66%,#000 66% 100%);
-  mask:radial-gradient(circle,transparent 0 66%,#000 66% 100%);
+  content:"";position:absolute;inset:0;border-radius:50%;
+  background:repeating-conic-gradient(from -12deg, #fff 0 24deg, transparent 24deg 45deg);
+  -webkit-mask:radial-gradient(circle, transparent 0 60%, #000 60.5% 100%);
+  mask:radial-gradient(circle, transparent 0 60%, #000 60.5% 100%);
+}
+/* a fine dark line where the rim meets the middle */
+.chip::after{
+  content:"";position:absolute;inset:19.5%;border-radius:50%;
+  border:2px solid rgba(11,12,8,.32);pointer-events:none;
 }
 .chip .nm{
-  color:var(--ink);position:relative;font-family:var(--display);text-transform:uppercase;letter-spacing:.02em;
-  font-size:19px;line-height:1;max-width:66px;overflow-wrap:anywhere;text-align:center;
+  position:relative;z-index:1;font-family:var(--display);text-transform:uppercase;
+  letter-spacing:.02em;line-height:1.02;text-align:center;color:#fff;
+  max-width:70px;display:flex;flex-direction:column;
+  text-shadow:0 1px 2px rgba(0,0,0,.4);
 }
-.chip .rk{position:relative;font-family:var(--data);font-size:10px;letter-spacing:.1em;opacity:.55;margin-top:3px}
-.chip.player{color:var(--red)}
-.chip.nonplayer{color:var(--green)}
-.chip.out{color:#8a8a80;opacity:.5}
-.chip.out .nm{text-decoration:line-through;color:#8a8a80}
+.chip .nm .ln{display:block;white-space:nowrap}
+.chip .rk{position:relative;z-index:1;font-family:var(--data);font-size:9px;letter-spacing:.1em;
+  color:#fff;opacity:.85;margin-top:3px;text-shadow:0 1px 2px rgba(0,0,0,.4)}
+.chip.player{--body:var(--purple)}
+.chip.nonplayer{--body:var(--turq)}
+.chip.out{--body:#9A968C;opacity:.55}
+.chip.out .nm{text-decoration:line-through}
 .chip:hover{transform:translateY(-3px)}
 .chip .x{
   position:absolute;top:-6px;right:-6px;width:26px;height:26px;border-radius:50%;
@@ -285,21 +299,16 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 .stepper button{min-width:40px;padding:0 8px;height:40px;border:2px solid var(--ink);border-radius:2px;font-family:var(--display);font-size:24px;line-height:1}
 .stepper button:hover{background:var(--ink);color:var(--chalk)}
 .stepper b{font-family:var(--display);font-size:30px;min-width:60px;text-align:center}
-.co-badge{position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);
-  background:var(--wire);color:var(--ink);font-family:var(--display);font-size:13px;line-height:1;
-  padding:3px 9px;border-radius:999px;border:2px solid var(--ink);z-index:2}
-.chip.co{cursor:pointer}
-.chip.co .co-score{font-family:var(--display);font-size:15px;color:var(--wire);opacity:1;margin-top:1px}
-.chip.co.on .co-score{color:var(--ink)}
-.rack .chip{width:86px;height:86px;border-width:2px;box-shadow:none;background:rgba(11,12,8,.05);color:rgba(11,12,8,.3);border-color:rgba(11,12,8,.28)}
-.rack .chip::before{opacity:.5}
-.rack .chip .nm{font-size:16px;max-width:60px;color:rgba(11,12,8,.55)}
-.rack .chip .rk{font-size:9px}
-.rack .chip.on{background:var(--chalk);color:var(--green);border-color:var(--ink);
-  box-shadow:0 3px 0 rgba(0,0,0,.3),inset 0 0 0 6px var(--chalk),inset 0 0 0 9px currentColor}
-.rack .chip.on .nm{color:var(--ink)}
+/* Checkouts appear on chips only here, on the screen where you pick who hit one. */
+.chip.co{--body:#B0ABA0;cursor:pointer;opacity:.7}
+.chip.co.on{--body:var(--purple);opacity:1}
+.chip.co .co-score{font-family:var(--display);font-size:16px;opacity:1;letter-spacing:.02em;
+  background:var(--ink);color:#fff;border-radius:999px;padding:1px 9px;margin-top:4px;text-shadow:none}
+.rack .chip{--body:#B0ABA0;width:96px;height:96px;border-width:2px;box-shadow:none;opacity:.65}
+.rack .chip .nm{max-width:64px}
+.rack .chip.on{--body:var(--turq);opacity:1;box-shadow:0 3px 0 rgba(0,0,0,.35)}
 .rack .chip .tick{position:absolute;top:-5px;right:-5px;width:24px;height:24px;border-radius:50%;
-  background:var(--green);color:var(--chalk);font-size:13px;line-height:24px;text-align:center;z-index:2}
+  background:var(--ink);color:#fff;font-size:13px;line-height:24px;text-align:center;z-index:3}
 .codebox{width:100%;margin-top:12px;border:2px solid var(--ink);background:#FFF;color:var(--ink);
   padding:10px;border-radius:2px;font-family:var(--data);font-size:11px;line-height:1.4;
   word-break:break-all;resize:vertical;-webkit-user-select:all;user-select:all}
@@ -356,8 +365,8 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 .plc .rec .btn{border-color:var(--ink);color:var(--ink);padding:4px 10px}
 @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
 @media (max-width:640px){
-  .chip{width:88px;height:88px}
-  .chip .nm{font-size:16px;max-width:56px}
+  .chip{width:98px;height:98px}
+  .chip .nm{max-width:64px}
   .standings{max-height:44%}
 }
 </style>
@@ -370,7 +379,7 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 (function(){
 'use strict';
 
-var VERSION='1.14.0';
+var VERSION='1.16.1';
 var KEY='wednesday-darts-v1';
 var store=(function(){
   try{var t='__t';localStorage.setItem(t,t);localStorage.removeItem(t);return localStorage;}
@@ -1078,24 +1087,48 @@ function viewSetup(){
     '</div></div>';
 }
 
+/* Chip names: a single word always stays on one line; several words split across two.
+   The font shrinks to whatever the longest line needs rather than wrapping mid-word. */
+function chipName(name){
+  var w=String(name||'').trim().split(/\s+/).filter(Boolean);
+  var lines;
+  if(w.length<=1){
+    lines=[w[0]||''];
+  }else{
+    var total=w.join(' ').length,best=1,bestDiff=1e9;
+    for(var i=1;i<w.length;i++){
+      var a=w.slice(0,i).join(' ').length,b=w.slice(i).join(' ').length;
+      var diff=Math.abs(a-b);
+      if(diff<bestDiff){bestDiff=diff;best=i;}
+    }
+    lines=[w.slice(0,best).join(' '),w.slice(best).join(' ')];
+  }
+  var longest=0;
+  lines.forEach(function(l){if(l.length>longest)longest=l.length;});
+  var fs=Math.max(9,Math.min(21,Math.floor(132/Math.max(longest,1))));
+  if(lines.length>1)fs=Math.min(fs,16);
+  return '<span class="nm" style="font-size:'+fs+'px">'+
+    lines.map(function(l){return '<span class="ln">'+esc(l)+'</span>';}).join('')+'</span>';
+}
+
 /* ---------- entry ---------- */
 function viewEntry(){
   var dec=isDeciderWeek(),mk=monthKey(S.cfg.date);
   var act=active(),half=Math.floor(act.length/2),odd=act.length%2===1;
   var chips='',rank=0;
   orderedPeople().forEach(function(p){
-    var role,lbl,lr=dec?leagueRow(p.name,mk,S.cfg.date):null;
-    if(p.out){role='out';lbl='Sitting out';}
+    var role,lbl='',lr=dec?leagueRow(p.name,mk,S.cfg.date):null;
+    if(p.out){role='out';}
     else{
       if(rank===half&&half>0)chips+='<div class="divider">Non-players — the other half</div>';
-      role=rank<half?'player':'nonplayer';lbl=rank<half?'Player':'Non-player';rank++;
+      role=rank<half?'player':'nonplayer';rank++;
+      /* The two halves are already obvious from the dividers and the colours, so the only
+         thing worth printing under a name is the league standing on a decider week. */
+      if(dec)lbl=(lr?lr.w:0)+(((lr?lr.w:0)===1)?' win':' wins');
     }
-    if(lr&&!p.out)lbl=lbl+' · '+lr.w;
-    else if(dec&&!p.out)lbl=lbl+' · 0';
     chips+='<div class="chip '+role+'" data-person="'+p.id+'">'+
       '<button class="x" data-del="'+p.id+'" aria-label="Remove '+esc(p.name)+'">×</button>'+
-      '<span class="nm">'+esc(p.name)+'</span><span class="rk">'+lbl+'</span>'+
-      (coBest(p.name)?'<span class="co-badge">'+coBest(p.name)+'</span>':'')+
+      chipName(p.name)+(lbl?'<span class="rk">'+lbl+'</span>':'')+
       (dec||p.out?'':'<span class="mv"><button data-up="'+p.id+'" aria-label="'+(role==='nonplayer'?'Promote '+esc(p.name)+' to the players':'Move '+esc(p.name)+' up the players')+'">▲</button>'+
         '<button data-down="'+p.id+'" aria-label="'+(role==='player'?'Drop '+esc(p.name)+' to the non-players':'Move '+esc(p.name)+' down the non-players')+'">▼</button></span>')+
       '</div>';
@@ -1104,7 +1137,7 @@ function viewEntry(){
   if(odd)warn='<p class="sub" style="color:#B92A20;font-weight:600">'+act.length+' names is an odd number. Tap a chip to sit someone out, or add one more.</p>';
   var lead=dec
     ?'<p class="sub"><b>Decider week.</b> The order is locked to the '+monthLabel(mk)+' league table, so nobody in contention gets drawn alongside a rival — everyone chasing it keeps a route to the crown. The number on each chip is their wins so far this month.</p>'
-    :'<p class="sub">Add each name as the £'+S.cfg.fee+' lands. Then order them best-to-worst — the top half throw as players, the bottom half get drawn against them. Tap a chip to sit someone out.</p>';
+    :'<p class="sub">Add each name as the £'+S.cfg.fee+' lands. Then order them best-to-worst — the top half throw as players, the bottom half get drawn with them. Tap a chip to sit someone out.</p>';
   var regs=regulars(),ln=lastNight();
   var rack='';
   if(regs.length){
@@ -1112,9 +1145,7 @@ function viewEntry(){
       regs.map(function(r){
         var on=here(r.n);
         return '<div class="chip reg'+(on?' on':'')+'" data-reg="'+esc(r.n)+'">'+
-          (on?'<span class="tick">\u2713</span>':'')+
-          '<span class="nm">'+esc(r.n)+'</span>'+
-          '<span class="rk">'+(on?'Playing':(r.w?r.w+' this month':'\u2014'))+'</span></div>';
+          (on?'<span class="tick">\u2713</span>':'')+chipName(r.n)+'</div>';
       }).join('')+'</div>';
   }
   return '<div class="topbar"><div class="brand">Wednesday <b>Darts</b></div>'+
@@ -1155,7 +1186,7 @@ function viewDraw(){
       return list.map(function(p){
         var sel=S.pair.sel===p.id?' style="transform:translateY(-6px);box-shadow:0 0 0 4px #C9992B"':'';
         return '<div class="chip '+(side==='a'?'player':'nonplayer')+(used[p.id]?' out':'')+'" data-pick="'+p.id+'" data-side="'+side+'"'+sel+'>'+
-          '<span class="nm">'+esc(p.name)+'</span></div>';
+          chipName(p.name)+'</div>';
       }).join('');
     }
     body='<h1 class="big">The hat</h1>'+
@@ -1693,7 +1724,7 @@ function drawCheckout(){
   var chips=S.people.map(function(p){
     var on=key(p.name)===key(c.name),b=coBest(p.name);
     return '<div class="chip co'+(on?' on':'')+'" data-coname="'+esc(p.name)+'">'+
-      '<span class="nm">'+esc(p.name)+'</span>'+
+      chipName(p.name)+
       (b?'<span class="rk co-score">'+b+'</span>':'')+'</div>';
   }).join('');
   var valid=c.name&&c.score>=2;
@@ -1995,7 +2026,7 @@ if(typeof globalThis!=='undefined'&&globalThis.__DARTS_TEST__){
     assignGroups:assignGroups,splitPlan:splitPlan,record:record,render:render,
     isLastOfMonth:isLastOfMonth,isDeciderWeek:isDeciderWeek,leagueTable:leagueTable,
     leagueRow:leagueRow,orderedPeople:orderedPeople,doDraw:doDraw,nightRows:nightRows,
-    upsertWeek:upsertWeek,crownFor:crownFor,monthKey:monthKey,roster:roster,movePerson:movePerson,openAmend:openAmend,amendStep:amendStep,amendPick:amendPick,amendSave:amendSave,amendReset:amendReset,undo:undo,newNight:newNight,flipWinner:flipWinner,harvest:harvest,liveGames:liveGames,applyBestOf:applyBestOf,coBest:coBest,coTop:coTop,openCheckout:openCheckout,coStep:coStep,coSave:coSave,sideHTML:sideHTML,tname:tname,tnameHTML:tnameHTML,packBytes:packBytes,unpackBytes:unpackBytes,encodePayload:encodePayload,decodePayload:decodePayload,mergeLeague:mergeLeague,shareURL:shareURL,takeNight:takeNight,stranded:stranded,reboard:reboard,ordinal:ordinal,regulars:regulars,addPerson:addPerson,dropPerson:dropPerson,here:here,applyLastOrder:applyLastOrder,lastNight:lastNight,backupInfo:backupInfo};
+    upsertWeek:upsertWeek,crownFor:crownFor,monthKey:monthKey,roster:roster,movePerson:movePerson,openAmend:openAmend,amendStep:amendStep,amendPick:amendPick,amendSave:amendSave,amendReset:amendReset,undo:undo,newNight:newNight,flipWinner:flipWinner,harvest:harvest,liveGames:liveGames,applyBestOf:applyBestOf,coBest:coBest,chipName:chipName,coTop:coTop,openCheckout:openCheckout,coStep:coStep,coSave:coSave,sideHTML:sideHTML,tname:tname,tnameHTML:tnameHTML,packBytes:packBytes,unpackBytes:unpackBytes,encodePayload:encodePayload,decodePayload:decodePayload,mergeLeague:mergeLeague,shareURL:shareURL,takeNight:takeNight,stranded:stranded,reboard:reboard,ordinal:ordinal,regulars:regulars,addPerson:addPerson,dropPerson:dropPerson,here:here,applyLastOrder:applyLastOrder,lastNight:lastNight,backupInfo:backupInfo};
 }
 })();
 
