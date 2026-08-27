@@ -306,6 +306,9 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 .bigwrap{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;background:#FFF}
 .bigwrap .qr{width:min(96vw,92vh);max-width:none}
 .bighint{font-family:var(--data);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#555;padding:10px 0 14px}
+.codebox{width:100%;margin-top:12px;border:2px solid var(--ink);background:#FFF;color:var(--ink);
+  padding:10px;border-radius:2px;font-family:var(--data);font-size:11px;line-height:1.4;
+  word-break:break-all;resize:vertical;-webkit-user-select:all;user-select:all}
 .pastebox{flex:1 1 220px;min-width:0;border:2px solid var(--ink);background:none;color:inherit;
   padding:10px 12px;border-radius:2px;font-family:var(--data);font-size:13px}
 #copyNote{align-self:center}
@@ -373,7 +376,7 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 (function(){
 'use strict';
 
-var VERSION='1.12.0';
+var VERSION='1.13.0';
 var KEY='wednesday-darts-v1';
 var store=(function(){
   try{var t='__t';localStorage.setItem(t,t);localStorage.removeItem(t);return localStorage;}
@@ -1273,7 +1276,7 @@ function shareURL(code){
 /* --- the share sheet --- */
 var SCOPES=[['all','Everything'],['month','This month + last'],['league','League only'],['tonight','Tonight only']];
 function openShare(scope){
-  S.share={scope:scope||'all',code:null,url:null,err:null,ver:0};
+  S.share={scope:scope||'all',code:null,url:null,err:null,ver:0,ecl:'',showText:false};
   drawShare();buildShare();
 }
 function buildShare(){
@@ -1302,10 +1305,17 @@ function drawShare(){
       (sh.url?'<p style="opacity:.7">Scan it with the other phone\u2019s camera. It opens this app with the data ready to bring in.</p>'
              :'<p style="opacity:.7">This page is open from a file rather than a web address, so scanning won\u2019t open anything. Copy the text and paste it on the other device instead.</p>')+
       '<div class="modalrow"><button class="btn" data-big="1">Make it full screen</button>'+
-      '<button class="btn ghost small" data-copycode="1">Copy the text code</button>'+
+      (canSend()?'<button class="btn" data-send="1">Send it instead</button>':'')+
+      '</div>'+
+      '<div class="eyebrow">No camera needed</div>'+
+      '<p>'+(canSend()?'<b>Send it instead</b> hands the link straight to AirDrop, Messages or anything else \u2014 far more reliable than pointing a camera at a screen. '
+                     :'')+
+      'Or copy the text and paste it into the box on the other device.</p>'+
+      '<div class="modalrow"><button class="btn ghost small" data-copycode="1">Copy the text code</button>'+
+      '<button class="btn ghost small" data-showtext="1">'+(sh.showText?'Hide':'Show')+' the text</button>'+
+      '<button class="btn ghost small" data-testqr="1">Scan test</button>'+
       '<span class="grouptag" id="copyNote"></span></div>'+
-      '<div class="modalrow" style="margin-top:10px">'+
-      '<button class="btn ghost small" data-testqr="1">Scan test \u2014 tiny code, no data</button></div>';
+      (sh.showText?'<textarea class="codebox" readonly rows="4" onclick="this.select()">'+esc(text)+'</textarea>':'');
   }
   setModal('<div class="scrim"><div class="modal">'+
     '<h2>Hand over</h2>'+
@@ -1324,6 +1334,15 @@ function drawShare(){
 
 /* A deliberately tiny code carrying nothing but the plain page address. If the camera
    reads this but not the big one, the problem is density, not the encoder. */
+function canSend(){return typeof navigator!=='undefined'&&!!navigator.share;}
+function sendLink(){
+  var sh=S.share;if(!sh||!sh.code)return;
+  var text=sh.url||sh.code;
+  try{
+    navigator.share(sh.url?{title:'Wednesday Darts handover',url:sh.url}:{title:'Wednesday Darts handover',text:text})
+      .catch(function(){});
+  }catch(e){}
+}
 function drawTest(){
   var url=shareURL('')||'https://example.com/';
   url=url.replace(/#d=$/,'');
@@ -2159,7 +2178,7 @@ function openBoards(){
 
 /* ---------- events ---------- */
 document.addEventListener('click',function(e){
-  var t=e.target.closest('[data-cfg],[data-go],[data-add],[data-del],[data-up],[data-down],[data-person],[data-draw],[data-pick],[data-clearpairs],[data-confirmpairs],[data-grp],[data-split],[data-start],[data-redraw],[data-game],[data-side],[data-undo],[data-amend],[data-astep],[data-apick],[data-asave],[data-areset],[data-aclose],[data-estep],[data-newnight2],[data-wipe],[data-wipe2],[data-restore],[data-restore2],[data-flip2],[data-end],[data-reset],[data-checkout],[data-boards],[data-setboards],[data-pull],[data-cosave],[data-coname],[data-costep],[data-coclear],[data-format],[data-share],[data-scope],[data-copycode],[data-big],[data-closebig],[data-testqr],[data-paste],[data-imp],[data-setscore],[data-setbo],[data-close],[data-tie],[data-tiecancel],[data-dec],[data-league],[data-back],[data-month],[data-addweek],[data-editweek],[data-eadd],[data-erm],[data-esave],[data-edel],[data-eclose],[data-reg],[data-lastorder],[data-crown],[data-crownwin],[data-crownshare],[data-uncrown]');
+  var t=e.target.closest('[data-cfg],[data-go],[data-add],[data-del],[data-up],[data-down],[data-person],[data-draw],[data-pick],[data-clearpairs],[data-confirmpairs],[data-grp],[data-split],[data-start],[data-redraw],[data-game],[data-side],[data-undo],[data-amend],[data-astep],[data-apick],[data-asave],[data-areset],[data-aclose],[data-estep],[data-newnight2],[data-wipe],[data-wipe2],[data-restore],[data-restore2],[data-flip2],[data-end],[data-reset],[data-checkout],[data-boards],[data-setboards],[data-pull],[data-cosave],[data-coname],[data-costep],[data-coclear],[data-format],[data-share],[data-scope],[data-copycode],[data-big],[data-closebig],[data-testqr],[data-send],[data-showtext],[data-paste],[data-imp],[data-setscore],[data-setbo],[data-close],[data-tie],[data-tiecancel],[data-dec],[data-league],[data-back],[data-month],[data-addweek],[data-editweek],[data-eadd],[data-erm],[data-esave],[data-edel],[data-eclose],[data-reg],[data-lastorder],[data-crown],[data-crownwin],[data-crownshare],[data-uncrown]');
   if(!t)return;
   var d=t.dataset;
 
@@ -2275,12 +2294,17 @@ document.addEventListener('click',function(e){
   if(d.share){return openShare();}
   if(d.scope){S.share.scope=d.scope;S.share.code=null;S.share.err=null;drawShare();return buildShare();}
   if(d.big){return drawBig();}
+  if(d.send){return sendLink();}
+  if(d.showtext){S.share.showText=!S.share.showText;return drawShare();}
   if(d.testqr){return drawTest();}
   if(d.closebig){return drawShare();}
   if(d.copycode){
     var cc=S.share&&S.share.code?(S.share.url||S.share.code):'';
-    if(cc&&navigator.clipboard)navigator.clipboard.writeText(cc).then(function(){
-      var el2=document.getElementById('copyNote');if(el2)el2.textContent='copied';});
+    if(!cc)return;
+    function noteCopied(okc){var el2=document.getElementById('copyNote');if(el2)el2.textContent=okc?'copied':'press and hold the text to copy';}
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(cc).then(function(){noteCopied(true);},function(){S.share.showText=true;drawShare();noteCopied(false);});
+    }else{S.share.showText=true;drawShare();noteCopied(false);}
     return;
   }
   if(d.paste){
