@@ -439,6 +439,13 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
   position:relative;z-index:3;font-family:var(--data);font-size:10px;letter-spacing:.24em;
   text-transform:uppercase;color:rgba(255,233,168,.5);padding:0 0 6px;
 }
+.talso{
+  position:relative;z-index:3;margin:0 12px 8px;padding:8px 16px;border-radius:999px;
+  border:1px solid rgba(255,224,150,.45);background:rgba(255,224,150,.1);
+  font-family:var(--data);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:#FFE9A8;cursor:pointer;max-width:calc(100% - 24px);
+}
+.talso:hover{background:rgba(255,224,150,.22)}
 .wpick{width:100%;text-align:left;cursor:pointer;background:rgba(11,12,8,.03)}
 .wpick:hover{background:rgba(201,153,43,.16)}
 .wpick.lead{border-color:var(--wire);background:rgba(201,153,43,.28)}
@@ -543,7 +550,7 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 (function(){
 'use strict';
 
-var VERSION='1.21.1';
+var VERSION='1.22.0';
 var KEY='wednesday-darts-v1';
 var store=(function(){
   try{var t='__t';localStorage.setItem(t,t);localStorage.removeItem(t);return localStorage;}
@@ -1849,6 +1856,7 @@ function sparkles(){
   return s;
 }
 var justCrowned=null;
+var justWomen=null;
 var tStream='open';
 function showTrophy(mk,stream){
   lgYear=String(mk).slice(0,4);
@@ -1887,6 +1895,8 @@ function viewTrophy(){
       '<button class="btn ghost small tclose" data-troomclose="1">Close</button>'+
     '</div>'+
     '<div class="tlabel">'+(women?'The women\u2019s trophy':'The open trophy')+'</div>'+
+    ((!women&&justWomen)?'<button class="talso" data-tstream="women">'+
+      esc(justWomen.join(' & '))+' took the women\u2019s trophy \u00b7 tap to see it</button>':'')+
     '<div class="tstage">'+
       '<div class="tspin">'+
         '<div class="tface front">'+trophySVG('front',tStream)+'</div>'+
@@ -2377,9 +2387,14 @@ document.addEventListener('click',function(e){
   if(d.league){if(S.phase!=='league'){S.prevPhase=S.phase;lgMonth=monthKey(S.cfg.date);S.phase='league';}modalHTML='';return render();}
   if(d.back){S.phase=S.prevPhase||'setup';return render();}
   if(d.month){lgMonth=shiftMonth(lgMonth||monthKey(S.cfg.date),parseInt(d.month,10));return render();}
-  if(d.trophy){S.phase='trophy';lgYear=(lgMonth||monthKey(S.cfg.date)).slice(0,4);modalHTML='';return render();}
-  if(d.troomclose){justCrowned=null;S.phase='league';return render();}
-  if(d.tstream){tStream=d.tstream;justCrowned=null;return render();}
+  if(d.trophy){
+    S.phase='trophy';tStream='open';       /* the room always opens on the open trophy */
+    justWomen=null;
+    lgYear=(lgMonth||monthKey(S.cfg.date)).slice(0,4);
+    justCrowned=null;modalHTML='';return render();
+  }
+  if(d.troomclose){justCrowned=null;justWomen=null;S.phase='league';return render();}
+  if(d.tstream){tStream=d.tstream;if(d.tstream==='women')justWomen=null;return render();}
   if(d.year){
     var ys=crownYears(),i2=ys.indexOf(lgYear)+parseInt(d.year,10);
     if(i2>=0&&i2<ys.length)lgYear=ys[i2];
@@ -2431,14 +2446,16 @@ document.addEventListener('click',function(e){
     return drawWomen();
   }
   if(d.wsave){
-    var wm=womenPick.m;
-    setCrown(wm,womenPick.sel,null,'women');
+    var wm=womenPick.m,wsel=womenPick.sel.slice();
+    setCrown(wm,wsel,null,'women');
     womenPick=null;modalHTML='';
-    return showTrophy(wm);
+    justWomen=wsel.length?wsel:null;
+    return showTrophy(wm,'open');
   }
   if(d.wskip){
     var wm2=womenPick.m;womenPick=null;modalHTML='';
-    return showTrophy(wm2);
+    justWomen=null;
+    return showTrophy(wm2,'open');
   }
   if(d.mcell){return openMonthEdit(d.mcell,d.mstream||'open');}
   if(d.msave){
