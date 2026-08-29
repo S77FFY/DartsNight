@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Darts">
+<meta name="theme-color" content="#15160F">
 <title>Wednesday Darts</title>
 <style>
 :root{
@@ -550,7 +555,7 @@ h1.big{font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;
 (function(){
 'use strict';
 
-var VERSION='1.22.0';
+var VERSION='1.23.0';
 var KEY='wednesday-darts-v1';
 var store=(function(){
   try{var t='__t';localStorage.setItem(t,t);localStorage.removeItem(t);return localStorage;}
@@ -1234,6 +1239,59 @@ function checkIncomingHash(){
         '<p>'+esc(e.message||'The code was not readable.')+'</p>'+
         '<div class="modalrow"><button class="btn" data-close="1">Close</button></div></div></div>');
     });
+}
+
+/* ---------- keeping the screen awake ---------- */
+/* Safari has supported the Screen Wake Lock API since 16.4, so the page can ask the
+   iPad not to sleep while a night is on. The lock is dropped whenever the tab is
+   hidden, so it has to be taken again every time the app comes back to the front. */
+var wakeLock=null, wakeWanted=true, wakeState='off';
+function wakeSupported(){
+  return typeof navigator!=='undefined' && navigator.wakeLock && navigator.wakeLock.request;
+}
+function releaseWake(){
+  wakeWanted=false;
+  if(wakeLock){try{wakeLock.release();}catch(e){}wakeLock=null;}
+  wakeState='off';
+}
+function requestWake(){
+  if(!wakeWanted||wakeLock||!wakeSupported())return;
+  try{
+    var p=navigator.wakeLock.request('screen');
+    if(!p||!p.then)return;
+    p.then(function(lock){
+      wakeLock=lock;wakeState='on';
+      if(lock.addEventListener)lock.addEventListener('release',function(){
+        wakeLock=null;
+        if(wakeState==='on')wakeState='idle';
+      });
+      if(S.phase==='play')render();
+    },function(){
+      wakeState='blocked';
+      if(S.phase==='play')render();
+    });
+  }catch(e){wakeState='blocked';}
+}
+function wakePill(){
+  if(!wakeSupported())return '<span class="pill tap" data-wakeinfo="1">Screen may sleep</span>';
+  if(!wakeWanted)return '<span class="pill tap" data-waketoggle="1">Screen may sleep</span>';
+  if(wakeState==='on')return '<span class="pill gold tap" data-waketoggle="1">\u25cf Screen stays on</span>';
+  if(wakeState==='blocked')return '<span class="pill tap" data-wakeinfo="1">Screen may sleep</span>';
+  return '<span class="pill tap" data-waketoggle="1">Keeping screen on\u2026</span>';
+}
+function wakeInfo(){
+  setModal('<div class="scrim"><div class="modal">'+
+    '<h2>Keeping the screen on</h2>'+
+    (wakeSupported()
+      ? '<p>The app asks the iPad to stay awake while a night is on, but the browser turned the request down. That usually means the page is in a background tab, or the iPad is in Low Power Mode \u2014 come back to this tab, or take it off Low Power, and it will try again.</p>'
+      : '<p>This browser has no way for a page to keep the screen awake. Safari has been able to since version 16.4, so updating iPadOS would fix it.</p>')+
+    '<p>Failing that, adding this page to the Home Screen and opening it from there gives it a better chance, since it runs as its own app rather than a browser tab.</p>'+
+    '<div class="modalrow"><button class="btn" data-close="1">Right you are</button></div></div></div>');
+}
+if(typeof document!=='undefined'&&document.addEventListener){
+  document.addEventListener('visibilitychange',function(){
+    if(!document.hidden){requestWake();}
+  });
 }
 
 /* ---------- rendering ---------- */
@@ -1974,6 +2032,7 @@ function viewPlay(){
     '<div class="topbar"><div class="brand">Wednesday <b>Darts</b></div>'+
     '<div class="meta">'+
       '<span class="pill">'+dayLabel(S.cfg.date)+'</span>'+
+      wakePill()+
       '<span class="pill tap" data-format="1">'+S.cfg.score+' · '+(S.cfg.bestOf===3?'Best of 3':'Single leg')+'</span>'+
       '<span class="pill tap" data-boards="1">'+S.cfg.boards+' board'+(S.cfg.boards>1?'s':'')+'</span>'+
       '<span class="pill gold tap" data-checkout="1">'+co+'</span>'+
@@ -2379,7 +2438,8 @@ function openBoards(){
 
 /* ---------- events ---------- */
 document.addEventListener('click',function(e){
-  var t=e.target.closest('[data-cfg],[data-go],[data-add],[data-del],[data-up],[data-down],[data-person],[data-draw],[data-pick],[data-clearpairs],[data-confirmpairs],[data-grp],[data-split],[data-start],[data-redraw],[data-game],[data-side],[data-undo],[data-amend],[data-astep],[data-apick],[data-asave],[data-areset],[data-aclose],[data-estep],[data-newnight2],[data-wipe],[data-wipe2],[data-restore],[data-restore2],[data-flip2],[data-end],[data-reset],[data-checkout],[data-boards],[data-setboards],[data-pull],[data-cosave],[data-coname],[data-costep],[data-coclear],[data-format],[data-share],[data-scope],[data-copycode],[data-send],[data-showtext],[data-paste],[data-imp],[data-setscore],[data-setbo],[data-close],[data-tie],[data-tiecancel],[data-dec],[data-league],[data-back],[data-month],[data-addweek],[data-trophy],[data-troomclose],[data-year],[data-tstream],[data-editweek],[data-eadd],[data-erm],[data-esave],[data-edel],[data-edel2],[data-eback],[data-eclose],[data-reg],[data-lastorder],[data-crown],[data-crownsel],[data-crownsave],[data-crowncancel],[data-wsel],[data-wsave],[data-wskip],[data-mcell],[data-msave],[data-mclear],[data-mclose],[data-uncrown]');
+  if(wakeWanted&&!wakeLock)requestWake();
+  var t=e.target.closest('[data-cfg],[data-go],[data-add],[data-del],[data-up],[data-down],[data-person],[data-draw],[data-pick],[data-clearpairs],[data-confirmpairs],[data-grp],[data-split],[data-start],[data-redraw],[data-game],[data-side],[data-undo],[data-amend],[data-astep],[data-apick],[data-asave],[data-areset],[data-aclose],[data-estep],[data-newnight2],[data-wipe],[data-wipe2],[data-waketoggle],[data-wakeinfo],[data-restore],[data-restore2],[data-flip2],[data-end],[data-reset],[data-checkout],[data-boards],[data-setboards],[data-pull],[data-cosave],[data-coname],[data-costep],[data-coclear],[data-format],[data-share],[data-scope],[data-copycode],[data-send],[data-showtext],[data-paste],[data-imp],[data-setscore],[data-setbo],[data-close],[data-tie],[data-tiecancel],[data-dec],[data-league],[data-back],[data-month],[data-addweek],[data-trophy],[data-troomclose],[data-year],[data-tstream],[data-editweek],[data-eadd],[data-erm],[data-esave],[data-edel],[data-edel2],[data-eback],[data-eclose],[data-reg],[data-lastorder],[data-crown],[data-crownsel],[data-crownsave],[data-crowncancel],[data-wsel],[data-wsave],[data-wskip],[data-mcell],[data-msave],[data-mclear],[data-mclose],[data-uncrown]');
   if(!t)return;
   var d=t.dataset;
 
@@ -2510,7 +2570,7 @@ document.addEventListener('click',function(e){
     if(a>=2&&a<=S.teams.length-2){S.cfg.splitA=a;assignGroups();}
     return render();
   }
-  if(d.start){buildFixtures();S.manualRank={};S.finished=false;S.phase='play';return render();}
+  if(d.start){buildFixtures();S.manualRank={};S.finished=false;S.phase='play';requestWake();return render();}
 
   if(d.amend){e.stopPropagation();return openAmend(parseInt(d.amend,10));}
   if(d.astep){return amendStep(d.astep,parseInt(d.adelta,10));}
@@ -2598,6 +2658,12 @@ document.addEventListener('click',function(e){
     }catch(e5){}
     return render();
   }
+  if(d.waketoggle){
+    if(wakeWanted)releaseWake();
+    else{wakeWanted=true;wakeState='idle';requestWake();}
+    return render();
+  }
+  if(d.wakeinfo){return wakeInfo();}
   if(d.wipe){return askWipe();}
   if(d.wipe2){
     try{store.removeItem(KEY);}catch(err){}
@@ -2638,7 +2704,7 @@ if(typeof globalThis!=='undefined'&&globalThis.__DARTS_TEST__){
     assignGroups:assignGroups,splitPlan:splitPlan,record:record,render:render,
     isLastOfMonth:isLastOfMonth,isDeciderWeek:isDeciderWeek,leagueTable:leagueTable,
     leagueRow:leagueRow,orderedPeople:orderedPeople,doDraw:doDraw,nightRows:nightRows,
-    upsertWeek:upsertWeek,crownFor:crownFor,crownYears:crownYears,yearChampions:yearChampions,monthWinner:monthWinner,setCrown:setCrown,crownList:crownList,trophySVG:trophySVG,monthKey:monthKey,roster:roster,movePerson:movePerson,openAmend:openAmend,amendStep:amendStep,amendPick:amendPick,amendSave:amendSave,amendReset:amendReset,undo:undo,newNight:newNight,flipWinner:flipWinner,harvest:harvest,liveGames:liveGames,applyBestOf:applyBestOf,coBest:coBest,chipName:chipName,coTop:coTop,openCheckout:openCheckout,coStep:coStep,coSave:coSave,sideHTML:sideHTML,tname:tname,tnameHTML:tnameHTML,packBytes:packBytes,unpackBytes:unpackBytes,encodePayload:encodePayload,decodePayload:decodePayload,mergeLeague:mergeLeague,shareURL:shareURL,takeNight:takeNight,stranded:stranded,reboard:reboard,ordinal:ordinal,regulars:regulars,addPerson:addPerson,dropPerson:dropPerson,here:here,applyLastOrder:applyLastOrder,lastNight:lastNight,backupInfo:backupInfo};
+    upsertWeek:upsertWeek,crownFor:crownFor,crownYears:crownYears,yearChampions:yearChampions,monthWinner:monthWinner,setCrown:setCrown,crownList:crownList,requestWake:requestWake,releaseWake:releaseWake,wakePill:wakePill,wakeSupported:wakeSupported,trophySVG:trophySVG,monthKey:monthKey,roster:roster,movePerson:movePerson,openAmend:openAmend,amendStep:amendStep,amendPick:amendPick,amendSave:amendSave,amendReset:amendReset,undo:undo,newNight:newNight,flipWinner:flipWinner,harvest:harvest,liveGames:liveGames,applyBestOf:applyBestOf,coBest:coBest,chipName:chipName,coTop:coTop,openCheckout:openCheckout,coStep:coStep,coSave:coSave,sideHTML:sideHTML,tname:tname,tnameHTML:tnameHTML,packBytes:packBytes,unpackBytes:unpackBytes,encodePayload:encodePayload,decodePayload:decodePayload,mergeLeague:mergeLeague,shareURL:shareURL,takeNight:takeNight,stranded:stranded,reboard:reboard,ordinal:ordinal,regulars:regulars,addPerson:addPerson,dropPerson:dropPerson,here:here,applyLastOrder:applyLastOrder,lastNight:lastNight,backupInfo:backupInfo};
 }
 })();
 
