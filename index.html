@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOMS · v3.5.0 · S77FFY</title>
+<title>NOMS · v3.5.1 · S77FFY</title>
 <style>
 /* ============================================================
-   NOMS v3.5.0 — S77FFY
+   NOMS v3.5.1 — S77FFY
    Palette: purple felt / bone card stock / brass / scoresheet ink
    ============================================================ */
 /* Two skins. Neon is the default; Felt is the original table. */
@@ -152,35 +152,50 @@ body.theme-felt .mark h1{font-family:Georgia,serif;font-weight:400;letter-spacin
 .prow input{flex:1;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:10px;color:var(--bone);padding:10px 12px}
 .prow.sel input{border-color:rgba(217,169,76,.5)}
 
-/* ---------- the table, from above: leather rail, wood, red baize ---------- */
-.tabletop{position:relative;width:min(94vw,520px);aspect-ratio:1.5/1;margin:4px auto 10px;
-  border-radius:50%;
-  background:linear-gradient(160deg,#2a2a2e,#141416 60%,#0a0a0c);
-  box-shadow:0 18px 40px rgba(0,0,0,.55), inset 0 2px 5px rgba(255,255,255,.10), inset 0 -6px 14px rgba(0,0,0,.7);
-  padding:6.5%;
+/* ---------- the club table, from above ----------
+   Stadium shape: straight long sides, semicircular ends. Padded black
+   leather rail, oak surround with steel cup holders, red baize centre. */
+.tabletop{position:relative;width:min(96vw,560px);aspect-ratio:1.85/1;margin:6px auto 12px;
+  border-radius:999px;
+  background:linear-gradient(180deg,#3a3a40 0%,#1c1c20 18%,#0e0e11 55%,#232327 100%);
+  box-shadow:0 20px 44px rgba(0,0,0,.6),
+             inset 0 3px 6px rgba(255,255,255,.16),
+             inset 0 -8px 18px rgba(0,0,0,.75);
 }
-.tabletop .wood{position:absolute;inset:6.5%;border-radius:50%;
-  background:repeating-conic-gradient(from 0deg at 50% 50%,
-    #6b4423 0deg 4deg, #7d5228 4deg 8deg, #5c3a1e 8deg 12deg);
-  box-shadow:inset 0 0 0 2px rgba(0,0,0,.5), 0 2px 6px rgba(0,0,0,.5)}
-.tabletop .baize{position:absolute;inset:12.5%;border-radius:50%;
+.tabletop::after{ /* sheen along the top of the padded rail */
+  content:'';position:absolute;inset:1.5% 1% auto 1%;height:26%;border-radius:999px;
+  background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,0));pointer-events:none}
+.tabletop .wood{position:absolute;inset:11.5% 6.2%;border-radius:999px;
   background:
-    repeating-conic-gradient(from 0deg at 50% 50%, rgba(0,0,0,.14) 0deg 3deg, rgba(255,255,255,.05) 3deg 6deg),
-    radial-gradient(closest-side at 50% 42%, #7e1f24 0%, #5e161c 62%, #3d0d12 100%);
-  box-shadow:inset 0 0 34px rgba(0,0,0,.65), inset 0 0 0 3px rgba(0,0,0,.35)}
-.tabletop .baize::after{content:'';position:absolute;inset:9%;border-radius:50%;
-  border:1px dashed rgba(255,255,255,.13)}
-.tseat{position:absolute;transform:translate(-50%,-50%);text-align:center;width:74px;z-index:3}
+    repeating-linear-gradient(96deg, rgba(0,0,0,.05) 0 3px, rgba(255,255,255,.035) 3px 7px),
+    linear-gradient(170deg,#c98a4b 0%,#b3762f 40%,#9a5f22 100%);
+  box-shadow:inset 0 0 0 2px rgba(0,0,0,.45), inset 0 4px 12px rgba(0,0,0,.35),
+             0 2px 8px rgba(0,0,0,.5)}
+.tabletop .baize{position:absolute;inset:30% 17%;border-radius:999px;
+  background:
+    repeating-linear-gradient(45deg, rgba(0,0,0,.07) 0 2px, rgba(255,255,255,.05) 2px 5px),
+    repeating-linear-gradient(-45deg, rgba(0,0,0,.05) 0 2px, rgba(255,255,255,.03) 2px 5px),
+    linear-gradient(170deg,#e2404e 0%,#cf2f3d 45%,#ab2130 100%);
+  box-shadow:inset 0 0 22px rgba(0,0,0,.35), 0 1px 3px rgba(0,0,0,.5),
+             inset 0 0 0 2px rgba(0,0,0,.18)}
+.cup{position:absolute;width:7.4%;aspect-ratio:1.55/1;transform:translate(-50%,-50%);
+  border-radius:999px;
+  background:linear-gradient(160deg,#e8ecf0,#9aa3ad 45%,#4d545c 100%);
+  box-shadow:inset 0 2px 3px rgba(255,255,255,.65), inset 0 -2px 4px rgba(0,0,0,.5),
+             0 1px 3px rgba(0,0,0,.6);z-index:2}
+.cup::after{content:'';position:absolute;inset:22%;border-radius:999px;
+  background:radial-gradient(closest-side at 40% 30%, #2b3036, #101317)}
+.tseat{position:absolute;transform:translate(-50%,-50%);text-align:center;z-index:4}
 .tseat .tn{font-size:12px;font-weight:700;line-height:1.15;
-  background:rgba(0,0,0,.62);border:1px solid var(--line);border-radius:999px;padding:4px 8px;
-  display:inline-block;max-width:74px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tseat.hot .tn{border-color:var(--gold);color:var(--gold-hi);background:rgba(34,211,238,.2);
-  box-shadow:0 0 16px rgba(34,211,238,.5)}
+  background:rgba(4,8,16,.82);border:1px solid var(--line);border-radius:999px;padding:4px 9px;
+  display:inline-block;max-width:86px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tseat.hot .tn{border-color:var(--gold);color:var(--gold-hi);background:rgba(34,211,238,.24);
+  box-shadow:0 0 18px rgba(34,211,238,.6)}
 .tseat.ace .tn{background:var(--gold);color:#04121a;border-color:var(--gold-hi);
-  box-shadow:0 0 26px rgba(34,211,238,.8)}
+  box-shadow:0 0 28px rgba(34,211,238,.85)}
 .tseat .num{display:block;font-size:9px;letter-spacing:.14em;color:var(--bone-dim);margin-bottom:3px}
-#huntSlot{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:4}
-#huntSlot .card{--cw:clamp(46px,11vw,64px)}
+#huntSlot{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5}
+#huntSlot .card{--cw:clamp(44px,10.5vw,62px)}
 .trail{display:flex;flex-wrap:wrap;justify-content:center;min-height:calc(var(--cw)*0.9);
   padding:2px 10px 6px;margin-bottom:6px}
 .trail .card{--cw:clamp(30px,7vw,42px);margin-left:calc(var(--cw)*-0.55);box-shadow:0 3px 7px rgba(0,0,0,.5)}
@@ -579,7 +594,7 @@ body.cast #sheetModal .panel{max-width:none}
     <button class="btn ghost wide" id="btnLeague">Season table</button>
     <button class="btn ghost wide" id="btnRules">How it plays</button>
   </div>
-  <div class="foot">NOMS v3.5.0 &middot; S77FFY</div>
+  <div class="foot">NOMS v3.5.1 &middot; S77FFY</div>
 </div>
 
 <!-- ================= GAME SETUP ================= -->
@@ -1693,7 +1708,7 @@ else root.NOMS = api;
 // === ENGINE END ===
 
 /* ============================================================
-   NOMS v3.5.0 — UI layer — S77FFY
+   NOMS v3.5.1 — UI layer — S77FFY
    Note: no persistence by design (storage APIs are blocked in
    the claude.ai preview). A save/resume can be added for the
    GitHub Pages build.
@@ -1701,7 +1716,7 @@ else root.NOMS = api;
 (function () {
 'use strict';
 var E = window.NOMS;
-var VERSION = '3.5.0';
+var VERSION = '3.5.1';
 
 /* ---------- tiny helpers ---------- */
 function $(id) { return document.getElementById(id); }
@@ -1985,22 +2000,53 @@ function startGame() {
 }
 
 /* ---------- the table ---------- */
+/* Walk the outline of a stadium — two straight sides joined by semicircular
+   ends — so seats sit where people actually sit, not on an ellipse.
+   k is 0 at the top centre and runs clockwise; scale pulls it inwards. */
+function stadiumPoint(k, ratio, scale) {
+  var H = 1, W = ratio;
+  var r = H / 2, L = W - H;                 // straight run between the two arcs
+  var P = 2 * L + 2 * Math.PI * r;
+  var s = (((k % 1) + 1) % 1) * P;
+  var x, y, a;
+  if (s < L / 2) { x = s; y = -r; }
+  else if (s < L / 2 + Math.PI * r) {
+    a = (s - L / 2) / r - Math.PI / 2;
+    x = L / 2 + r * Math.cos(a); y = r * Math.sin(a);
+  } else if (s < L / 2 + Math.PI * r + L) {
+    x = L / 2 - (s - (L / 2 + Math.PI * r)); y = r;
+  } else if (s < L / 2 + 2 * Math.PI * r + L) {
+    a = (s - (L / 2 + Math.PI * r + L)) / r + Math.PI / 2;
+    x = -L / 2 + r * Math.cos(a); y = r * Math.sin(a);
+  } else { x = -L / 2 + (s - (L / 2 + 2 * Math.PI * r + L)); y = -r; }
+  return { x: 50 + (x / W) * 100 * scale, y: 50 + (y / H) * 100 * scale };
+}
 function seatTable(names, hostId) {
   var host = $(hostId);
   host.innerHTML = '';
-  var n = names.length;
+  var n = names.length, RATIO = 1.85;
   names.forEach(function (nm, i) {
-    // first player picked sits at the top, the rest go round clockwise
-    var ang = (-90 + i * 360 / n) * Math.PI / 180;
-    var x = 50 + 47 * Math.cos(ang);
-    var y = 50 + 46 * Math.sin(ang);
+    // whoever was picked first sits at the top, the rest go round clockwise
+    var p = stadiumPoint(i / n, RATIO, 0.96);
     var d = document.createElement('div');
     d.className = 'tseat'; d.id = 'ts' + i;
-    d.style.left = x + '%';
-    d.style.top = y + '%';
+    d.style.left = p.x + '%';
+    d.style.top = p.y + '%';
     d.innerHTML = '<span class="num">' + (i + 1) + '</span><span class="tn">' + esc(nm) + '</span>';
     host.appendChild(d);
   });
+  // steel cup holders sunk into the oak, between the rail and the baize
+  var tbl = $('huntTable');
+  var old = tbl.querySelectorAll('.cup'), c;
+  for (c = 0; c < old.length; c++) old[c].parentNode.removeChild(old[c]);
+  for (c = 0; c < 8; c++) {
+    var q = stadiumPoint(c / 8 + 1 / 16, RATIO, 0.72);
+    var cup = document.createElement('div');
+    cup.className = 'cup';
+    cup.style.left = q.x + '%';
+    cup.style.top = q.y + '%';
+    tbl.appendChild(cup);
+  }
 }
 function trailAdd(card, lap) {
   var t = $('dealTrail');
